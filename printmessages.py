@@ -1,7 +1,7 @@
 import mido
 
-all_mid = ['BohemianRhapsody.mid', 'ItsBeginningToLookALotLikeChristmas.mid', 'major-scale.mid', 'RiverFlowsInYou.mid']
-# mid = mido.MidiFile('BohemianRhapsody.mid')
+# all_mid = ['BohemianRhapsody.mid', 'ItsBeginningToLookALotLikeChristmas.mid', 'major-scale.mid', 'RiverFlowsInYou.mid']
+all_mid = ['RiverFlowsInYou.mid']
 
 
 def do_shit(mid):
@@ -9,11 +9,17 @@ def do_shit(mid):
     for i, track in enumerate(mid.tracks):
         print(f"Track {i}: {track.name}")
         for msg in track:
-            if msg.type == "end_of_track":
-                print(msg)
+            if msg.is_meta:
+                if filter_meta(msg):
+                    print(msg)
+                else:
+                    pass
             else:
                 pass
 
+def filter_meta(msg):
+    accept = ["set_tempo", "time_signature", "key_signature", "end_of_track"]
+    return True if msg.type in accept else False
 
 def main():
     for i in range(0, len(all_mid)):

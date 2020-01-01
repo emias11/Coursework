@@ -17,13 +17,9 @@ for i, track in enumerate(mid.tracks):
             # elif msg.type == 'control_change':
 
 
-
-
-
-
-
-
-
 def cumulative_time(last_time, add_on):
     last_time += add_on
     return last_time
+
+
+
