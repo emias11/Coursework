@@ -40,21 +40,20 @@ def filter_meta_type(msg):
 
 # removes tempo duplicates and only keeps the last tempo stated for a particular cumulative time
 def remove_extra_tempo(msg, msgwithtempos, current_time):
-    if (msg.tempo, current_time) not in msgwithtempos[1]:  # only runs following code if new msg isn't a duplicate
-        [msgwithtempos.remove(tempo) for tempo in msgwithtempos if tempo == []] # I've added this line out of
-        # desperation to try and remove all blank lists but for some reason they are still there fuckk
-        # [msgwithtempos.remove(tempo) for tempo in msgwithtempos if tempo[1][1] == current_time] # this is the problem line, i want to be able to run this
-        msgwithtempos.append([[msg, current_time], [msg.tempo, current_time]])
-        print(msgwithtempos)
-        print(msg)
+    if not msgwithtempos: # if the list is empty
+       msgwithtempos.append([[msg, current_time], [msg.tempo, current_time]])
     else:
-        pass
+        for i in range(len(msgwithtempos)):
+            msgwithtempo = msgwithtempos[i]
+            if msgwithtempo[1][1] == current_time:  # this checks duplicates
+                msgwithtempos.remove(msgwithtempo)
+        msgwithtempos.append([[msg, current_time], [msg.tempo, current_time]])
     return msgwithtempos
 
 
 def do_shit(mid, all_messages):  # for each track (then message) do the following
     current_time = 0
-    msgwithtempos = [[], []]
+    msgwithtempos = []
     for i, track in enumerate(mid.tracks):
         print(f"Track {i}: {track.name}")
         for msg in track:
@@ -64,13 +63,14 @@ def do_shit(mid, all_messages):  # for each track (then message) do the followin
             if msg.is_meta:
                 if filter_meta_type(msg):
                     if msg.type == "set_tempo":
-                        print(remove_extra_tempo(msg, msgwithtempos, current_time))
+                        msgwithtempos = remove_extra_tempo(msg, msgwithtempos, current_time)
                     else:
                         all_messages.append([msg, current_time])
                 else:
                     pass
             else:
                 all_messages.append([msg, current_time])
+        print(msgwithtempos)
     return all_messages
 
 # need to join all_messages list with the second item from the msgwithtempos list
@@ -83,9 +83,8 @@ def main():  # for each midi file do the following
         if remove_type_2(mid):
             i += 1
         else:
-            print(do_shit(mid, all_messages))
+            do_shit(mid, all_messages)
 
 
 if __name__ == '__main__':
     main()
-
