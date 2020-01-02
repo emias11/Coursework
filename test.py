@@ -21,7 +21,8 @@ def printmessages(mid):
 
 def main():
     # get the list of midi files from regulate_tracks
-    list1 = regulate_tracks.main()
+    output = regulate_tracks.main()
+    list1 = output[0]
 
     # create a blank midi file and add a track to it
     mid = mido.MidiFile()
@@ -35,7 +36,7 @@ def main():
 
     printmessages(mid)
 
-    play_with_pygame('new_song.mid')
+    # play_with_pygame('new_song.mid')
 
 
 if __name__ == '__main__':

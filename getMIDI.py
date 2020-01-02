@@ -42,3 +42,29 @@ def inspect(filename):
 
 inspect('AUD_HTX0085')
 '''
+
+"""
+def sort(list_of_lists):
+    low = 0
+    high = len(list_of_lists) - 1
+    quick_sort(list_of_lists, low, high)
+    return list_of_lists
+
+
+def partition(alist, low, high):
+    i = (low - 1)
+    pivot = alist[high][1]
+    for j in range(low, high):
+        if alist[j][1] <= pivot:
+            i += 1
+            alist[i], alist[j] = alist[j], alist[i]
+    alist[i + 1], alist[high] = alist[high], alist[i + 1]
+    return i + 1
+
+
+def quick_sort(alist, low, high):
+    if low < high:
+        pi = partition(alist, low, high)
+        quick_sort(alist, low, pi - 1)
+        quick_sort(alist, pi + 1, high)
+"""
