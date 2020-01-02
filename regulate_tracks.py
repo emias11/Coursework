@@ -3,11 +3,11 @@ import pygame
 
 # place-holder until database implemented
 # all_mid = ['major-scale.mid']
-all_mid = ['RiverFlowsInYou.mid']
-# all_mid = ['BohemianRhapsody.mid',
-#           'ItsBeginningToLookALotLikeChristmas.mid',
-#           'major-scale.mid',
-#           'RiverFlowsInYou.mid']
+# all_mid = ['RiverFlowsInYou.mid']
+all_mid = ['BohemianRhapsody.mid',
+           'ItsBeginningToLookALotLikeChristmas.mid',
+           'major-scale.mid',
+           'RiverFlowsInYou.mid']
 
 
 # play the file through the console
@@ -41,7 +41,7 @@ def filter_meta_type(msg):
 # removes tempo duplicates and only keeps the last tempo stated for a particular cumulative time
 def remove_extra_tempo(msg, msgwithtempos, current_time):
     if not msgwithtempos: # if the list is empty
-       msgwithtempos.append([[msg, current_time], [msg.tempo, current_time]])
+        msgwithtempos.append([[msg, current_time], [msg.tempo, current_time]])
     else:
         for i in range(len(msgwithtempos)):
             msgwithtempo = msgwithtempos[i]
@@ -55,7 +55,7 @@ def do_shit(mid, all_messages):  # for each track (then message) do the followin
     current_time = 0
     msgwithtempos = []
     for i, track in enumerate(mid.tracks):
-        print(f"Track {i}: {track.name}")
+        # print(f"Track {i}: {track.name}")
         for msg in track:
             current_time = add_cumulative_time(msg, current_time)[0]
             if msg.type == "sysex data":
@@ -70,10 +70,7 @@ def do_shit(mid, all_messages):  # for each track (then message) do the followin
                     pass
             else:
                 all_messages.append([msg, current_time])
-        print(msgwithtempos)
-    return all_messages
-
-# need to join all_messages list with the second item from the msgwithtempos list
+    return all_messages, msgwithtempos
 
 
 def main():  # for each midi file do the following
@@ -83,7 +80,10 @@ def main():  # for each midi file do the following
         if remove_type_2(mid):
             i += 1
         else:
-            do_shit(mid, all_messages)
+            all_messages = do_shit(mid, all_messages)[0]
+            msgwithtempos = do_shit(mid, all_messages)[1]
+            final_messages = all_messages + msgwithtempos
+            print(final_messages)
 
 
 if __name__ == '__main__':
