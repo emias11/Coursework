@@ -1,9 +1,19 @@
 import mido
 import pygame
+import regulate_tracks
 
+# get the list of midi files from regulate_tracks
+list1 = regulate_tracks.main()
+
+# create a blank midi file and add a track to it
 mid = mido.MidiFile()
 track = mido.MidiTrack()
 mid.tracks.append(track)
+
+def get_new_delta_time(delta_time, cumulative_time):
+    new_delta_time = cumulative_time - delta_time
+    return new_delta_time
+
 
 
 # track.append(mido.Message('program_change', program=12, time=0))

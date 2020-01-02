@@ -3,11 +3,13 @@ import pygame
 
 # place-holder until database implemented
 # all_mid = ['major-scale.mid']
-# all_mid = ['RiverFlowsInYou.mid']
+all_mid = ['RiverFlowsInYou.mid']
+"""
 all_mid = ['BohemianRhapsody.mid',
            'ItsBeginningToLookALotLikeChristmas.mid',
            'major-scale.mid',
            'RiverFlowsInYou.mid']
+"""
 
 
 # play the file through the console
@@ -51,6 +53,33 @@ def remove_extra_tempo(msg, msgwithtempos, current_time):
     return msgwithtempos
 
 
+def sort(list_of_lists):
+    low = 0
+    high = len(list_of_lists) - 1
+
+    def partition(alist, low, high):
+        i = (low - 1)
+        print(alist)
+        pivot = alist[high][1]
+        print(pivot)
+        for j in range(low, high):
+            print(alist[j][1])
+            if alist[j][1] <= pivot:
+                i += 1
+                alist[i], alist[j] = alist[j], alist[i]
+        alist[i + 1], alist[high] = alist[high], alist[i + 1]
+        return (i + 1)
+
+    def quick_sort(alist, low, high):
+        if low < high:
+            pi = partition(alist, low, high)
+            quick_sort(alist, low, pi - 1)
+            quick_sort(alist, pi + 1, high)
+
+    quick_sort(list_of_lists, low, high)
+    return list_of_lists
+
+
 def do_shit(mid, all_messages):  # for each track (then message) do the following
     current_time = 0
     msgwithtempos = []
@@ -83,7 +112,9 @@ def main():  # for each midi file do the following
             all_messages = do_shit(mid, all_messages)[0]
             msgwithtempos = do_shit(mid, all_messages)[1]
             final_messages = all_messages + msgwithtempos
+            final_messages = sort(final_messages)
             print(final_messages)
+            return final_messages
 
 
 if __name__ == '__main__':
