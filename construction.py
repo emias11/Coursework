@@ -20,8 +20,6 @@ def get_new_delta_time(delta_time, cumulative_time):
 # track.append(mido.Message('note_on', note=64, velocity=64, time=32))
 # track.append(mido.Message('note_off', note=64, velocity=127, time=32))
 
-message1 = "'note_on', channel=1, note=57, velocity=65, time=171"
-message2 = "'note_off', channel=1, note=57, velocity=0, time=5107"
 
 
 def note_to_messages(note, duration):
