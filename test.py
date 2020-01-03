@@ -21,11 +21,12 @@ def printmessages(mid):
 
 def main():
     # get the list of midi files from regulate_tracks
-    output = regulate_tracks.main()
+    output, ticksperbeat = regulate_tracks.main()
     list1 = output[0]
 
     # create a blank midi file and add a track to it
     mid = mido.MidiFile()
+    mid.ticks_per_beat = ticksperbeat
     track = mido.MidiTrack()
     mid.tracks.append(track)
 

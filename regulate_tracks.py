@@ -72,13 +72,14 @@ def main():  # for each midi file do the following
     for i in range(0, len(all_mid)):
         all_messages = []
         mid = mido.MidiFile(all_mid[i])
+        ticksperbeat = mid.ticks_per_beat
         if not remove_type_2(mid):
             all_messages, msgwithtempos = do_shit(mid, all_messages)
             final_messages = all_messages + msgwithtempos
             final_messages = sorted(final_messages, key=lambda x: x[1])
             all_lists.append(final_messages)
     print(all_lists)
-    return all_lists
+    return all_lists, ticksperbeat
 
 
 if __name__ == '__main__':
