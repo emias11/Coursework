@@ -2,9 +2,9 @@ import mido
 import pygame
 
 # place-holder until database implemented
-# all_mid = ['major-scale.mid']
+all_mid = ['major-scale.mid']
 # all_mid = ['RiverFlowsInYou.mid']
-all_mid = ['BohemianRhapsody.mid']
+# all_mid = ['BohemianRhapsody.mid']
 # all_mid = ['ItsBeginningToLookALotLikeChristmas.mid']
 
 """
@@ -30,7 +30,7 @@ def add_cumulative_time(msg, current_time):
 
 # removes unnecessary meta data types
 def filter_meta_type(msg):
-    accept = ["set_tempo", "time_signature", "key_signature", "end_of_track"]
+    accept = ["set_tempo", "time_signature", "key_signature"]
     return True if msg.type in accept else False
 
 
@@ -51,7 +51,7 @@ def do_shit(mid, all_messages):  # for each track (then message) do the followin
     msgwithtempos = []
     for i, track in enumerate(mid.tracks):
         current_time = 0
-        # print(f"Track {i}: {track.name}")
+        print(f"Track {i}: {track.name}")
         for msg in track:
             current_time = add_cumulative_time(msg, current_time)[0]
             if msg.type == "sysex data":
@@ -75,7 +75,7 @@ def main():  # for each midi file do the following
         if not remove_type_2(mid):
             all_messages, msgwithtempos = do_shit(mid, all_messages)
             final_messages = all_messages + msgwithtempos
-            # final_messages = sorted(final_messages, key=lambda x: x[1])
+            final_messages = sorted(final_messages, key=lambda x: x[1])
             all_lists.append(final_messages)
     print(all_lists)
     return all_lists

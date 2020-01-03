@@ -1,0 +1,48 @@
+import mido
+import pygame
+
+
+def play_with_pygame(song):
+    pygame.init()
+    pygame.mixer.music.load(song)
+    length = pygame.time.get_ticks()
+    pygame.mixer.music.play()
+    while pygame.mixer.music.get_busy():
+        pygame.time.wait(length)
+
+
+def main():
+    mid = mido.MidiFile()
+    track = mido.MidiTrack()
+    mid.tracks.append(track)
+    track.append(mido.MetaMessage('set_tempo', tempo=500000, time=3840))
+    track.append(mido.MetaMessage('end_of_track', time=0))
+    track = mido.MidiTrack()
+    mid.tracks.append(track)
+    track.append(mido.Message('note_on', channel=0, note=60, velocity=100, time=0))
+    track.append(mido.Message('note_on', channel=0, note=62, velocity=100, time=960))
+    track.append(mido.Message('note_on', channel=0, note=64, velocity=100, time=960))
+    track.append(mido.Message('note_on', channel=0, note=65, velocity=100, time=960))
+    track.append(mido.Message('program_change', channel=0, program=123, time=960))
+    track.append(mido.Message('note_on', channel=0, note=67, velocity=100, time=0))
+    track.append(mido.Message('note_on', channel=0, note=69, velocity=100, time=960))
+    track.append(mido.Message('note_on', channel=0, note=71, velocity=100, time=960))
+    track.append(mido.Message('note_on', channel=0, note=72, velocity=100, time=960))
+    track.append(mido.Message('note_off', channel=0, note=60, velocity=100, time=2880))
+    track.append(mido.Message('note_off', channel=0, note=62, velocity=100, time=960))
+    track.append(mido.Message('note_off', channel=0, note=64, velocity=100, time=960))
+    track.append(mido.Message('note_off', channel=0, note=65, velocity=100, time=960))
+    track.append(mido.Message('note_off', channel=0, note=67, velocity=100, time=960))
+    track.append(mido.Message('note_off', channel=0, note=69, velocity=100, time=960))
+    track.append(mido.Message('note_off', channel=0, note=71, velocity=100, time=960))
+    track.append(mido.Message('note_off', channel=0, note=72, velocity=100, time=960))
+    track.append(mido.MetaMessage('end_of_track', time=0))
+
+    print(mid)
+    mid.save('new_song.mid')
+
+    play_with_pygame('new_song.mid')
+
+
+if __name__ == '__main__':
+    main()

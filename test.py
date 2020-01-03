@@ -29,14 +29,21 @@ def main():
     track = mido.MidiTrack()
     mid.tracks.append(track)
 
-    for item in list1:
-        track.append(item[0])
+    for i in range(len(list1)):
+        message = list1[i][0]
+        print(message.type)
+        if i == 0:
+            message.time = 0
+        else:
+            message.time = list1[i][1] - list1[i - 1][1]
+        print(message)
+        track.append(message)
 
     mid.save('new_song.mid')
 
     printmessages(mid)
 
-    # play_with_pygame('new_song.mid')
+    play_with_pygame('new_song.mid')
 
 
 if __name__ == '__main__':
