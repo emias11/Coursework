@@ -12,13 +12,6 @@ def play_with_pygame(song):
         pygame.time.wait(length)
 
 
-def printmessages(mid):
-    for i, track in enumerate(mid.tracks):
-        print(f"Track {i}: {track.name}")
-        for msg in track:
-            print(msg)
-
-
 def main():
     # get the list of midi files from regulate_tracks
     output, ticksperbeat = regulate_tracks.main()
@@ -32,17 +25,13 @@ def main():
 
     for i in range(len(list1)):
         message = list1[i][0]
-        print(message.type)
         if i == 0:
             message.time = 0
         else:
             message.time = list1[i][1] - list1[i - 1][1]
-        print(message)
         track.append(message)
 
     mid.save('new_song.mid')
-
-    printmessages(mid)
 
     play_with_pygame('new_song.mid')
 

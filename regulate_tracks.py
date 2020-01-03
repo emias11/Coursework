@@ -2,9 +2,9 @@ import mido
 import pygame
 
 # place-holder until database implemented
-all_mid = ['major-scale.mid']
+# all_mid = ['major-scale.mid']
 # all_mid = ['RiverFlowsInYou.mid']
-# all_mid = ['BohemianRhapsody.mid']
+all_mid = ['BohemianRhapsody.mid']
 # all_mid = ['ItsBeginningToLookALotLikeChristmas.mid']
 
 """
@@ -54,7 +54,9 @@ def do_shit(mid, all_messages):  # for each track (then message) do the followin
         print(f"Track {i}: {track.name}")
         for msg in track:
             current_time = add_cumulative_time(msg, current_time)[0]
-            if msg.type == "sysex data":
+            if msg.type == "control_change":
+                pass
+            elif msg.type == "sysex data":
                 pass
             elif msg.is_meta:
                 if filter_meta_type(msg):
@@ -63,6 +65,7 @@ def do_shit(mid, all_messages):  # for each track (then message) do the followin
                     else:
                         all_messages.append([msg, current_time])
             else:
+                print(msg)
                 all_messages.append([msg, current_time])
     return all_messages, msgwithtempos
 
@@ -84,7 +87,3 @@ def main():  # for each midi file do the following
 
 if __name__ == '__main__':
     main()
-
-# not getting set_tempo and time_signature messages through
-# also think you need to change delta time because you've changed it from type 1 to type 0 which i think is why bohemian rhapsody is playing weirdly
-# compare the output from print messages to the output from regulate_tracks and then test when you're just printing the messages (or the list of messages)I
