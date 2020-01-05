@@ -3,7 +3,7 @@ import pygame
 
 # place-holder until database implemented
 # all_mid = ['major-scale.mid']
-all_mid = [' (Yiruma).mid']
+all_mid = ['Gloria-Mozart.MID.mid']
 # all_mid = ['BohemianRhapsody.mid']
 # all_mid = ['ItsBeginningToLookALotLikeChristmas.mid']
 
