@@ -1,20 +1,14 @@
 import mido
 import pygame
 
+
 # place-holder until database implemented
 # all_mid = ['major-scale.mid']
-all_mid = ['Gloria-Mozart.MID.mid']
+# all_mid = ['Gloria-Mozart.MID.mid']
 # all_mid = ['BohemianRhapsody.mid']
 # all_mid = ['ItsBeginningToLookALotLikeChristmas.mid']
-
-"""
- all_mid = ['BohemianRhapsody.mid',
-           'ItsBeginningToLookALotLikeChristmas.mid',
-           'major-scale.mid',
-           'RiverFlowsInYou.mid']
-
-"""
-
+all_mid = [' (Yiruma).mid']
+# all_mid = ['BohemianRhapsody.mid']
 
 # check is midi file is type 2 (and removes if so) - this is unlikely but can happen on old sites
 def remove_type_2(midi):
@@ -51,7 +45,7 @@ def do_shit(mid, all_messages):  # for each track (then message) do the followin
     msgwithtempos = []
     for i, track in enumerate(mid.tracks):
         current_time = 0
-        print(f"Track {i}: {track.name}")
+        # print(f"Track {i}: {track.name}")
         for msg in track:
             current_time = add_cumulative_time(msg, current_time)[0]
             if msg.type == "control_change":
@@ -65,7 +59,6 @@ def do_shit(mid, all_messages):  # for each track (then message) do the followin
                     else:
                         all_messages.append([msg, current_time])
             else:
-                print(msg)
                 all_messages.append([msg, current_time])
     return all_messages, msgwithtempos
 
@@ -80,8 +73,9 @@ def main():  # for each midi file do the following
             all_messages, msgwithtempos = do_shit(mid, all_messages)
             final_messages = all_messages + msgwithtempos
             final_messages = sorted(final_messages, key=lambda x: x[1])
-            all_lists.append(final_messages)
-    print(all_lists)
+            all_lists += final_messages
+    for list1 in all_lists:
+        print(list1)
     return all_lists, ticksperbeat
 
 
