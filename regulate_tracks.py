@@ -10,6 +10,7 @@ import pygame
 all_mid = [' (Yiruma).mid']
 # all_mid = ['BohemianRhapsody.mid']
 
+
 # check is midi file is type 2 (and removes if so) - this is unlikely but can happen on old sites
 def remove_type_2(midi):
     return True if midi.type == 2 else False
@@ -24,7 +25,7 @@ def add_cumulative_time(msg, current_time):
 
 # removes unnecessary meta data types
 def filter_meta_type(msg):
-    accept = ["set_tempo", "time_signature", "key_signature"]
+    accept = ["set_tempo"]  # kept key signature and time signature, actually don't need it
     return True if msg.type in accept else False
 
 
@@ -48,16 +49,16 @@ def do_shit(mid, all_messages):  # for each track (then message) do the followin
         # print(f"Track {i}: {track.name}")
         for msg in track:
             current_time = add_cumulative_time(msg, current_time)[0]
-            if msg.type == "control_change":
-                pass
-            elif msg.type == "sysex data":
+            # if msg.type == "control_change":
+                # pass
+            # talk about this as an error as thought not important but important
+            if msg.type == "sysex data":  # this doesn't seem to do anything , probably doesn't matter
                 pass
             elif msg.is_meta:
-                if filter_meta_type(msg):
-                    if msg.type == "set_tempo":
-                        msgwithtempos = remove_extra_tempo(msg, msgwithtempos, current_time)
-                    else:
-                        all_messages.append([msg, current_time])
+                if msg.type == "set_tempo":
+                    msgwithtempos = remove_extra_tempo(msg, msgwithtempos, current_time)
+                else:
+                    pass
             else:
                 all_messages.append([msg, current_time])
     return all_messages, msgwithtempos
@@ -74,8 +75,12 @@ def main():  # for each midi file do the following
             final_messages = all_messages + msgwithtempos
             final_messages = sorted(final_messages, key=lambda x: x[1])
             all_lists += final_messages
-    for list1 in all_lists:
-        print(list1)
+    for i, item in enumerate(all_lists):
+        if all_lists[i][0].type == "set_tempo":
+            while all_lists[i+1][0].type == "set_tempo": #talk about this as an error with i-1 being logical but not working
+                all_lists.pop(i+1)
+    for i in all_lists:
+        print(i)
     return all_lists, ticksperbeat
 
 

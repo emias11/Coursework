@@ -15,7 +15,7 @@ def play_with_pygame(song):
 def main():
     # get the list of midi files from regulate_tracks
     output, ticksperbeat = regulate_tracks.main()
-    list1 = output[0]
+    list1 = output
 
     # create a blank midi file and add a track to it
     mid = mido.MidiFile()
