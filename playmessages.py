@@ -15,7 +15,7 @@ def main():
     mid = mido.MidiFile()
     track = mido.MidiTrack()
     mid.tracks.append(track)
-    track.append(mido.MetaMessage('set_tempo', tempo=500000, time=3840))
+    track.append(mido.MetaMessage('set_tempo', tempo=500000, time=0))
     track.append(mido.Message('program_change', channel=0, program=1, time=0))
     track.append(mido.Message('control_change', channel=0, control=64, value=100, time=0))
     track.append(mido.Message('note_on', channel=0, note=60, velocity=100, time=0))

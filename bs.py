@@ -19,6 +19,7 @@ def save_midi(url, name):
     statuscode = song.status_code
     if statuscode == 200:
         open(f"{name}.mid", "wb").write(song.content)
+        return name
     else:
         return "error"
 
@@ -26,13 +27,14 @@ def save_midi(url, name):
 def main():
     search = input("what search_query")
     results = scrape_results(search)
-    for name, url in results:
-        print(save_midi(url, name))
+    if not results:
+        print("No results")
+    else:
+        for name, url in results:
+            print(save_midi(url, name))
 
 
 if __name__ == '__main__':
     main()
-
-
 
 
