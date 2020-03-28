@@ -6,9 +6,8 @@ import pygame
 # all_mid = ['major-scale.mid']
 # all_mid = ['Gloria-Mozart.MID.mid']
 # all_mid = ['BohemianRhapsody.mid']
-# all_mid = ['ItsBeginningToLookALotLikeChristmas.mid']
-all_mid = [' (Yiruma).mid']
-# all_mid = ['BohemianRhapsody.mid']
+all_mid = ['ItsBeginningToLookALotLikeChristmas.mid']
+# all_mid = [' (Yiruma).mid']
 
 
 # check is midi file is type 2 (and removes if so) - this is unlikely but can happen on old sites
@@ -22,24 +21,19 @@ def add_cumulative_time(msg, current_time):
     current_time += add_on
     return current_time, add_on
 
-
-# removes unnecessary meta data types
-def filter_meta_type(msg):
-    accept = ["set_tempo"]  # kept key signature and time signature, actually don't need it
-    return True if msg.type in accept else False
-
-
+"""
 # removes tempo duplicates and only keeps the last tempo stated for a particular cumulative time
 def remove_extra_tempo(msg, msgwithtempos, current_time):
     if not msgwithtempos:  # if the list is empty
-        msgwithtempos.append([msg, current_time])
+        msgwithtempos.append([msg, current_time])  # append the tempo message along with the cumulative time
     else:
-        for i in range(len(msgwithtempos)):
-            msgwithtempo = msgwithtempos[i]
-            if msgwithtempo[1] == current_time:  # this checks duplicates
-                msgwithtempos.remove(msgwithtempo)
-        msgwithtempos.append([msg, current_time])
+        for i in range(len(msgwithtempos)):  # iterate through the current list of tempo messages + cumulative_times
+            msgwithtempo = msgwithtempos[i]  # allocate to the variable msgwithtempo the i item in the list
+            if msgwithtempo[1] == current_time:  # this checks for cumulative time duplicates
+                msgwithtempos.remove(msgwithtempo)  # removes from the list if duplicate (if found)
+        msgwithtempos.append([msg, current_time])  # adds the new tempo to the list (with its cumulative time)
     return msgwithtempos
+"""
 
 
 def do_shit(mid, all_messages):  # for each track (then message) do the following
@@ -49,18 +43,16 @@ def do_shit(mid, all_messages):  # for each track (then message) do the followin
         # print(f"Track {i}: {track.name}")
         for msg in track:
             current_time = add_cumulative_time(msg, current_time)[0]
-            # if msg.type == "control_change":
-                # pass
-            # talk about this as an error as thought not important but important
-            if msg.type == "sysex data":  # this doesn't seem to do anything , probably doesn't matter
-                pass
-            elif msg.is_meta:
-                if msg.type == "set_tempo":
-                    msgwithtempos = remove_extra_tempo(msg, msgwithtempos, current_time)
-                else:
-                    pass
-            else:
+            allowed_types = ["note_on", "note_off", "program_change", "set_tempo"]  # can add control_changes
+            if msg.type in allowed_types:
                 all_messages.append([msg, current_time])
+            # elif msg.type == "set_tempo":
+                # all_messages.append([msg, current_time])
+                # msgwithtempos = remove_extra_tempo(msg, msgwithtempos, current_time)
+            else:
+                pass
+            # else:
+                # all_messages.append([msg, current_time])
     return all_messages, msgwithtempos
 
 
@@ -77,12 +69,12 @@ def main():  # for each midi file do the following
             all_lists += final_messages
     for i, item in enumerate(all_lists):
         if all_lists[i][0].type == "set_tempo":
-            while all_lists[i+1][0].type == "set_tempo": #talk about this as an error with i-1 being logical but not working
-                all_lists.pop(i+1)
-    for i in all_lists:
-        print(i)
+            while all_lists[i+1][0].type == "set_tempo":  # talk about trying this with i and i-1?
+                all_lists.pop(i)
     return all_lists, ticksperbeat
 
 
 if __name__ == '__main__':
     main()
+
+
