@@ -19,7 +19,7 @@ def main():
     track.append(mido.Message('program_change', channel=0, program=1, time=0))
     track.append(mido.Message('control_change', channel=0, control=64, value=100, time=0))
     track.append(mido.Message('note_on', channel=0, note=60, velocity=100, time=0))
-    track.append(mido.Message('note_off', channel=0, note=60, velocity=100, time=960))
+    track.append(mido.Message('note_off', channel=0, note=60, time=960))
     track.append(mido.Message('note_on', channel=0, note=62, velocity=100, time=0))
     track.append(mido.Message('note_off', channel=0, note=62, velocity=100, time=960))
     track.append(mido.Message('note_on', channel=0, note=64, velocity=100, time=0))
