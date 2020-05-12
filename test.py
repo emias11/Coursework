@@ -15,6 +15,7 @@ def play_with_pygame(song):
 def main():
     # get the list of midi files from regulate_tracks
     output, ticksperbeat = regulate_tracks.main()
+    print(ticksperbeat)
     list1 = output
     print(list1)
 
@@ -23,7 +24,6 @@ def main():
     mid.ticks_per_beat = ticksperbeat
     track = mido.MidiTrack()
     mid.tracks.append(track)
-
     for i in range(len(list1)):
         message = list1[i][0]
         if i == 0:

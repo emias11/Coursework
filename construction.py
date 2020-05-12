@@ -1,28 +1,16 @@
 import mido
 import pygame
 import regulate_tracks
+from Markov import make_lists_for_all_parameters
 
-# get the list of midi files from regulate_tracks
-list1 = regulate_tracks.main()
 
 # create a blank midi file and add a track to it
 mid = mido.MidiFile()
 track = mido.MidiTrack()
 mid.tracks.append(track)
 
-def get_new_delta_time(delta_time, cumulative_time):
-    new_delta_time = cumulative_time - delta_time
-    return new_delta_time
 
-
-
-# track.append(mido.Message('program_change', program=12, time=0))
-# track.append(mido.Message('note_on', note=64, velocity=64, time=32))
-# track.append(mido.Message('note_off', note=64, velocity=127, time=32))
-
-
-
-def note_to_messages(note, duration):
+def note_to_messages(note, duration, velocity_on, velocity_off):
     x = mido.Message('note_on', note=note, velocity=127,
                  time=0)
     y = mido.Message('note_off', note=note, velocity=0,
@@ -30,7 +18,13 @@ def note_to_messages(note, duration):
     return x, y
 
 
-generated = note_to_messages(57, 577)
+def generate_note_on_offs(song_note_length, new_pitch, new_note_lengths, new_delays, new_velocity_on, new_velocity_off):
+    for i in range(len(song_note_length)):
+        print(new_pitch)
+        # note_to_messages('note_on', note=new_pitch[i],  )
+
+"""
+generated = note_to_messages(57, 800)
 
 bpm = 1000
 tempo = mido.midifiles.units.bpm2tempo(bpm)
@@ -39,7 +33,7 @@ track.append(mido.MetaMessage('set_tempo', tempo=tempo, time=0))
 track.append(generated[0])
 track.append(generated[1])
 track.append(mido.MetaMessage('end_of_track', time=0))
-
+"""
 
 
 # track.append(mido.Message(message0))
@@ -62,11 +56,20 @@ def play_with_pygame(song):
 play_with_pygame('new_song.mid')
 
 
-def do_shit(mid):
-    for i, track in enumerate(mid.tracks):
-        print(f"Track {i}: {track.name}")
-        for msg in track:
-            print(msg)
+def main():
+    output, ticksperbeat = regulate_tracks.main()
+    list1 = output
+    song_note_length, new_pitch, new_note_lengths, new_delays, new_velocity_on, new_velocity_off = make_lists_for_all_parameters(list1)
+    generate_note_on_offs(song_note_length, new_pitch, new_note_lengths, new_delays, new_velocity_on, new_velocity_off)
 
 
-do_shit(mid)
+if __name__ == '__main__':
+    main()
+
+"""
+def get_new_delta_time(delta_time, cumulative_time):
+    new_delta_time = cumulative_time - delta_time
+    return new_delta_time
+"""
+
+

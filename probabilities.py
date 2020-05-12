@@ -5,14 +5,14 @@ import regulate_tracks
 def get_channels_dict(input_msgs):
     """
     :param input_msgs: a list of all messages from an input song (along with their cumulative time)
-    :return: a dictionary of all channels used in a song and their corresponding program
+    :return: a dictionary of all programs used in a song (as keys) and their corresponding channels (as vals)
     """
     channels_dict = {}
     for i in range(len(input_msgs)):
         msg = input_msgs[i][0]
         if msg.type == "program_change":
-            if msg.channel not in channels_dict.keys():
-                channels_dict[msg.channel] = msg.program
+            if msg.program not in channels_dict.keys():
+                channels_dict[msg.program] = msg.channel
     return channels_dict
 
 
@@ -53,10 +53,10 @@ def notes_delays(channel_msgs):
                 note_on_difs.append(msg[1] - current_time_note_on)
                 current_time_note_on = msg[1]
             while bool:
-                if i != (len(channel_msgs))-1:
-                    if channel_msgs[i+y][0].type == 'note_off' and channel_msgs[i+y][0].note == note:
+                if i != (len(channel_msgs)) - 1:
+                    if channel_msgs[i + y][0].type == 'note_off' and channel_msgs[i + y][0].note == note:
                         bool = False
-                        note_lengths.append(channel_msgs[i+y][1] - msg[1])
+                        note_lengths.append(channel_msgs[i + y][1] - msg[1])
                     else:
                         y += 1
     return note_on_difs, note_lengths
@@ -69,12 +69,19 @@ def list_to_dict(a_list):
     a generic function to take a list and convert it into a dictionary where each item
     is a key, and the values are a list of items that immediately proceed the key item
     """
+    """
+    last_element = a_list[-1]
+    penultimate_element = a_list[-2]
+    if a_list.count(last_element) == 1 or a_list.count(penultimate_element) == 1:
+        a_list.remove(last_element)
+        a_list.remove(penultimate_element)
+    """
     r_dict = {}
     for i in range(1, len(a_list)):
-        if a_list[i-1] not in r_dict.keys():
-            r_dict[a_list[i-1]] = [a_list[i]]
+        if a_list[i - 1] not in r_dict.keys():
+            r_dict[a_list[i - 1]] = [a_list[i]]
         else:
-            r_dict[a_list[i-1]].append(a_list[i])
+            r_dict[a_list[i - 1]].append(a_list[i])
     return r_dict
 
 
@@ -161,21 +168,32 @@ def dict_vals_to_probs(dicts):
         sub_dict = a_dict[1]
         total_occurences = sum(sub_dict.values())
         for value in sub_dict.items():
-            sub_dict[value[0]] = value[1]/total_occurences
+            sub_dict[value[0]] = value[1] / total_occurences
     return dicts
+
+
+def get_final_dicts(msg_list, channel):
+    """
+    :param msg_list: a list of all the messages from a song
+    :param channel: input channel
+    :return: returns the pitch, velocities, note_length_, delays dicts (of dicts) for a particular channel
+    """
+    channel_msgs = get_channel_note_msgs(msg_list, channel)
+    note_on_difs, note_lengths = notes_delays(channel_msgs)
+    delays_dict = dict_vals_to_probs(make_dict_of_dicts(make_delay_and_len_dicts(note_on_difs, note_lengths)[0]))
+    note_lengths_dict = dict_vals_to_probs(make_dict_of_dicts(make_delay_and_len_dicts(note_on_difs, note_lengths)[1]))
+    velocity_on_dict = dict_vals_to_probs(make_dict_of_dicts(make_velocity_dicts(channel_msgs)[0]))
+    velocity_off_dict = dict_vals_to_probs(make_dict_of_dicts(make_velocity_dicts(channel_msgs)[1]))
+    pitch_dict = dict_vals_to_probs(make_dict_of_dicts(make_pitch_dict(channel_msgs)))
+    return pitch_dict, velocity_on_dict, velocity_off_dict, note_lengths_dict, delays_dict
+
 
 def main():
     output, ticksperbeat = regulate_tracks.main()
     list1 = output
     get_channels_dict(list1)
-    channel_msgs = get_channel_note_msgs(list1, 2)
-    note_on_difs, note_lengths = notes_delays(channel_msgs)
-    delays_dict = make_dict_of_dicts(make_delay_and_len_dicts(note_on_difs, note_lengths)[0])
-    note_lengths_dict = make_dict_of_dicts(make_delay_and_len_dicts(note_on_difs, note_lengths)[1])
-    velocity_on_dict = make_dict_of_dicts(make_velocity_dicts(channel_msgs)[0])
-    velocity_off_dict = make_dict_of_dicts(make_velocity_dicts(channel_msgs)[1])
-    pitch_dict = make_dict_of_dicts(make_pitch_dict(channel_msgs))
-    print(dict_vals_to_probs(pitch_dict))
+    for dict1 in get_final_dicts(list1, 1):
+        print(dict1)
 
 
 if __name__ == '__main__':
