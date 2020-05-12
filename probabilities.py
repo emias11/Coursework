@@ -2,6 +2,16 @@ import mido
 import regulate_tracks
 
 
+def get_channel_note_msgs(input_msgs, channel):
+    # this just gets the note msgs (with cumulative time) for all of a particular channel
+    channel_msgs = []
+    for msg in input_msgs:
+        if msg[0].type != "set_tempo" and msg[0].type != "program_change":
+            if msg[0].channel == channel:
+                channel_msgs.append(msg)
+    return channel_msgs
+
+
 def get_channels_dict(input_msgs):
     """
     :param input_msgs: a list of all messages from an input song (along with their cumulative time)
@@ -13,17 +23,11 @@ def get_channels_dict(input_msgs):
         if msg.type == "program_change":
             if msg.program not in channels_dict.keys():
                 channels_dict[msg.program] = msg.channel
+    keys = list(channels_dict.keys())
+    for key in keys:
+        if len(get_channel_note_msgs(input_msgs, channels_dict[key])) == 0:
+            del channels_dict[key]
     return channels_dict
-
-
-def get_channel_note_msgs(input_msgs, channel):
-    # this just gets the note msgs (with cumulative time) for all of a particular channel
-    channel_msgs = []
-    for msg in input_msgs:
-        if msg[0].type != "set_tempo" and msg[0].type != "program_change":
-            if msg[0].channel == channel:
-                channel_msgs.append(msg)
-    return channel_msgs
 
 
 def notes_delays(channel_msgs):

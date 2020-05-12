@@ -1,7 +1,7 @@
 import mido
 import pygame
 import regulate_tracks
-from Markov import make_lists_for_all_parameters
+from Markov import get_lists_for_all_channels
 
 
 # create a blank midi file and add a track to it

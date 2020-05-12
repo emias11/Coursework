@@ -69,11 +69,13 @@ def get_lists_for_all_channels(channels, msgs):
     """
     :param channels: a list of all the channels for the desired programs (instruments) to include in output song
     :param msgs: a list of all the messages in a track
-    :return: a dictionary where the keys are the channels and the values are the generated lists (+ song length)
+    :return: a dictionary where the keys are the programs and the values are the generated lists (+ song length)
     """
+    channels_dict = get_channels_dict(msgs)
+    new_channels_dict = {value: key for key, value in channels_dict.items()}  # swaps all keys and values in the dict
     channel_lists_dict = {}
     for channel in channels:
-        channel_lists_dict[channel] = make_lists_for_all_parameters(channel, msgs)
+        channel_lists_dict[new_channels_dict[channel]] = make_lists_for_all_parameters(channel, msgs)
     return channel_lists_dict
 
 
