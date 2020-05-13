@@ -4,16 +4,16 @@ import regulate_tracks
 import Markov
 
 
-def note_to_messages(note, current_time, duration, velocity_on, velocity_off, track):
-    x = mido.Message('note_on', note=note, velocity=velocity_on, time=current_time)
-    y = mido.Message('note_off', note=note, velocity=velocity_off, time=(current_time+duration))
-    #track.append(x)
-    #track.append(y)
-    #return x, y
+def note_to_messages(note, current_time, duration, velocity_on, velocity_off, note_message_list):
+    x = mido.Message('note_on', note=note, velocity=velocity_on, time=0)
+    y = mido.Message('note_off', note=note, velocity=velocity_off, time=0)
+    note_message_list.append([x, current_time])
+    note_message_list.append([y, current_time+duration])
 
 
 def generate_note_on_offs(list_of_lists, track):
     current_time = 0
+    note_message_list = []
     song_note_length = list_of_lists[0]
     new_pitch = list_of_lists[1]
     new_note_lengths = list_of_lists[2]
@@ -21,12 +21,24 @@ def generate_note_on_offs(list_of_lists, track):
     new_velocity_on = list_of_lists[4]
     new_velocity_off = list_of_lists[5]
     for i in range(song_note_length):
-        note_to_messages(new_pitch[i], current_time, new_note_lengths[i], new_velocity_on[i], new_velocity_off[i], track)
+        note_to_messages(new_pitch[i], current_time, new_note_lengths[i], new_velocity_on[i],
+                         new_velocity_off[i], note_message_list)
         try:
             current_time += new_delays[i]
-            print(new_delays[i])
         except IndexError:
             current_time += 0
+    return note_message_list
+
+
+def append_notes(note_message_list, track):
+    sorted_note_message_list = sorted(note_message_list, key=lambda x: x[1])
+    # above sorts by second element of list which is time
+    running_time = 0
+    for item in sorted_note_message_list:
+        msg = item[0]
+        msg.time = item[1] - running_time
+        running_time += (item[1] - running_time)
+        track.append(msg)
 
 
 def play_with_pygame(song):
@@ -50,7 +62,8 @@ def main():
     track.ticks_per_beat = ticksperbeat
 
     generate_note_on_offs(channels_list_dict[26], track)
-    #generate_note_on_offs(channels_list_dict[32], track)
+    note_message_list = generate_note_on_offs(channels_list_dict[26], track)
+    append_notes(note_message_list, track)
 
     mid.save('new_song.mid')
     play_with_pygame('new_song.mid')
