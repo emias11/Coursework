@@ -2,14 +2,6 @@ import mido
 import pygame
 
 
-# place-holder until database implemented
-# all_mid = ['major-scale.mid']
-# all_mid = ['Gloria-Mozart.MID.mid']
-# all_mid = ['BohemianRhapsody.mid']
-all_mid = ['ItsBeginningToLookALotLikeChristmas.mid', 'BohemianRhapsody.mid']
-# all_mid = [' (Yiruma).mid']
-
-
 # check is midi file is type 2 (and removes if so) - this is unlikely but can happen on old sites
 def remove_type_2(midi):
     return True if midi.type == 2 else False
@@ -36,14 +28,15 @@ def remove_extra_tempo(msg, msgwithtempos, current_time):
 """
 
 
-def do_shit(mid, all_messages):  # for each track (then message) do the following
+def filter_and_time(mid, all_messages):  # for each track (then message) do the following
     msgwithtempos = []
     for i, track in enumerate(mid.tracks):
         current_time = 0
         # print(f"Track {i}: {track.name}")
         for msg in track:
             current_time = add_cumulative_time(msg, current_time)[0]
-            allowed_types = ["note_on", "note_off", "program_change", "set_tempo"]  # can add control_changes
+            allowed_types = ["note_on", "note_off", "set_tempo"]
+            # can add control_changes, have removed program_changes
             if msg.type in allowed_types:
                 all_messages.append([msg, current_time])
             # elif msg.type == "set_tempo":
@@ -56,7 +49,36 @@ def do_shit(mid, all_messages):  # for each track (then message) do the followin
     return all_messages, msgwithtempos
 
 
+def unify_program_channels(list_of_msgs):
+    # if you wanna do tempos/program changes you'll need to change this function
+    new_list_of_msgs = []
+    allowed_types = ["note_on", "note_off"]
+    programs_and_channels = {}
+    # {program: channel}
+    for item in list_of_msgs:
+        msg = item[0]
+        if msg.type in allowed_types:
+            # first case: instrument not played and channel thus not recorded - no change to msg
+            if msg.note not in programs_and_channels.keys() and msg.channel not in programs_and_channels.values():
+                programs_and_channels[msg.note] = msg.channel
+                new_list_of_msgs.append(item)
+            # second case: instrument played but with different channel recorded - change msg's channel
+            if msg.note in programs_and_channels.keys() and msg.channel not in programs_and_channels.values():
+                msg.channel = programs_and_channels[msg.note]
+                new_list_of_msgs.append([msg, item[1]])
+            # third case: instrument played but it's channel already recorded - no change to msg
+            elif msg.note in programs_and_channels.keys() and msg.channel in programs_and_channels.values():
+                new_list_of_msgs.append(item)
+    return new_list_of_msgs
+
+
 def main():  # for each midi file do the following
+    # place-holder until database implemented
+    # all_mid = ['major-scale.mid']
+    # all_mid = ['Gloria-Mozart.MID.mid']
+    # all_mid = ['BohemianRhapsody.mid']
+    # all_mid = [' (Yiruma).mid']
+    all_mid = ['ItsBeginningToLookALotLikeChristmas.mid', 'BohemianRhapsody.mid']
     all_lists = []
     ticksperbeat = 0
     for i in range(0, len(all_mid)):
@@ -64,7 +86,7 @@ def main():  # for each midi file do the following
         mid = mido.MidiFile(all_mid[i])
         ticksperbeat += mid.ticks_per_beat  # change this to be average ticks per beat
         if not remove_type_2(mid):
-            all_messages, msgwithtempos = do_shit(mid, all_messages)
+            all_messages, msgwithtempos = filter_and_time(mid, all_messages)
             final_messages = all_messages + msgwithtempos
             final_messages = sorted(final_messages, key=lambda x: x[1])
             all_lists += final_messages
@@ -74,6 +96,16 @@ def main():  # for each midi file do the following
         if all_lists[i][0].type == "set_tempo":
             while all_lists[i+1][0].type == "set_tempo":  # talk about trying this with i and i-1?
                 all_lists.pop(i)
+    """
+    just a little test thing
+    list9 = []
+    for msg in all_lists:
+        if (msg[0].type == 'note_on' or msg[0].type == 'note_off') and msg[0].channel not in list9:
+            print(msg[0].channel)
+            list9.append(msg[0].channel)
+    print(list9)
+    """
+    all_lists = unify_program_channels(all_lists)
     return all_lists, ticksperbeat
 
 

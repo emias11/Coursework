@@ -51,18 +51,17 @@ def play_with_pygame(song):
 
 
 def main():
-    output, ticksperbeat = regulate_tracks.main()
+    output, ticksperbeat = regulate_tracks.main()  # input songs as parameters here?
     list1 = output
     channels_list_dict = Markov.main()
-
     mid = mido.MidiFile()
     track = mido.MidiTrack()
     mid.tracks.append(track)
     mid.ticks_per_beat = ticksperbeat
     track.ticks_per_beat = ticksperbeat
-
-    generate_note_on_offs(channels_list_dict[26], track)
-    note_message_list = generate_note_on_offs(channels_list_dict[26], track)
+    print(channels_list_dict)
+    generate_note_on_offs(channels_list_dict[60], track)
+    note_message_list = generate_note_on_offs(channels_list_dict[60], track)
     append_notes(note_message_list, track)
 
     mid.save('new_song.mid')

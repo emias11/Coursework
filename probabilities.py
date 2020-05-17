@@ -4,6 +4,7 @@ import regulate_tracks
 
 def get_channel_note_msgs(input_msgs, channel):
     # this just gets the note msgs (with cumulative time) for all of a particular channel
+    # this function works
     channel_msgs = []
     for msg in input_msgs:
         if msg[0].type != "set_tempo" and msg[0].type != "program_change":
@@ -21,6 +22,19 @@ def get_channels_dict(input_msgs):
     for i in range(len(input_msgs)):
         msg = input_msgs[i][0]
         if msg.type == "program_change":
+            if msg.program not in channels_dict.keys():
+                channels_dict[msg.program] = msg.channel
+    keys = list(channels_dict.keys())
+    for key in keys:
+        if len(get_channel_note_msgs(input_msgs, channels_dict[key])) == 0:
+            del channels_dict[key]
+    return channels_dict
+
+def get_channel_dict(input_msgs):
+    channels_dict = {}
+    for i in range(len(input_msgs)):
+        msg = input_msgs[i][0]
+        if msg.note not in channels
             if msg.program not in channels_dict.keys():
                 channels_dict[msg.program] = msg.channel
     keys = list(channels_dict.keys())
@@ -195,9 +209,11 @@ def get_final_dicts(msg_list, channel):
 def main():
     output, ticksperbeat = regulate_tracks.main()
     list1 = output
-    get_channels_dict(list1)
-    for dict1 in get_final_dicts(list1, 1):
-        print(dict1)
+    #  NOTE WITH CURRENT SONGS XMAS AND BOHO WE HAVE 13 CHANNELS (with note on/offs)
+    print(get_channels_dict(list1))
+    #print(get_channel_note_msgs(list1, 12))
+    #for dict1 in get_final_dicts(list1, 1): #put the channel in here
+        #print(dict1)
 
 
 if __name__ == '__main__':

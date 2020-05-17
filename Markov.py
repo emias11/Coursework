@@ -83,9 +83,10 @@ def main():
     output, ticksperbeat = regulate_tracks.main()
     list1 = output
     channels = get_song_inputs(list1)
-    make_lists_for_all_parameters(1, list1)
+    make_lists_for_all_parameters(8, list1) # NOTE YOU CHANGE THE CHANNEL HERE IT IS HARD CODED
     #print(get_lists_for_all_channels(channels, list1))
     channels_lists_dict = get_lists_for_all_channels(channels, list1)
+    print(channels_lists_dict)
     return channels_lists_dict
 
 
