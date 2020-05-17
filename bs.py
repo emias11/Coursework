@@ -24,17 +24,10 @@ def save_midi(url, name):
         return "error"
 
 
-def main():
-    search = input("what search_query")
-    results = scrape_results(search)
-    if not results:
-        print("No results")
-    else:
-        for name, url in results:
-            print(save_midi(url, name))
+def main(query):
+    results = scrape_results(query)
+    return results
 
 
 if __name__ == '__main__':
-    main()
-
-
+    main("")

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+	<head>
+		<meta charset="utf-8">
+		<title>Home</title>
+		<link href="{{ url_for("static", filename="stylesheets/main.css") }}" type="text/css" rel="stylesheet">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	</head>
+	<body>
+		<div id="wrapper">
+			<div id="song-select">
+				<!-- fix scrollbar going behind search -->
+				<form id="search" action="/" method="post">
+					<input type="text" placeholder="Search" name="query" id="search-box"></input>
+					<input type="submit" id="search-btn" value="SEARCH"></input>
+				</form>
+				<!-- songs of same name will cause a problem, use a uuid? -->
+				<div id="song-item-wrapper">
+					{% if amount %}
+						{% for i in range(amount) %}
+							<div data-id={{i}} class="song-item search-song-item">{{search_results[i][0]}}<button type="button" class="add-item">+</button></div> <!-- .song-item -->
+							{% endfor %}
+					{% endif %}
+				</div> <!-- #song-item-wrapper -->
+			</div> <!-- #song-select -->
+			<div id="selected-songs">
+				<!--<div class="song-item selected-song-item">Come A Little Closer 3<button type="button" class="remove-item">X</button></div>-->
+			</div>
+			<div id="instrument-select">
+				<form action="/process" id="form" method="post">
+					<!-- maybe output instruments as a list as opposed to instrument1=..., etc
+					might be easier to set up custom POST to flask API -->
+					<input type="hidden" name="songs" id="songs" value=""></input>
+					<input type="hidden" name="instruments" id="instruments" value=""></input>
+					<input type="submit" value="Submit"></input>
+				</form>
+				<button type="button" name="button" onclick="updateInstrumentBoxes()">Update</button>
+			</div> <!-- #instrument-select -->
+		</div> <!-- #wrapper -->
+	</body>
+	<script>
+		var allSelectedSongs = [];
+		var allSelectedInstruments = [];
+
+		function updateInstrumentBoxes() {
+			/*
+			send allSelectedSongs to python. download them (if not already downloaded), and return the list of instruments
+			use variable instruments like below
+			maybe clear the innerHTML first, or at least clear all the previous checkboxes
+			then run updateCheckboxListeners();
+			*/
+			var http = new XMLHttpRequest();
+			var url = "/retrieve_instruments";
+			var params = JSON.stringify({"songs": allSelectedSongs});
+			http.open("POST", url, true);
+
+			//Send the proper header information along with the request
+			http.setRequestHeader("Content-type", "application/json;charset=UTF-8");
+
+			http.onreadystatechange = function() {//Call a function when the state changes.
+			    if(http.readyState == 4 && http.status == 200) {
+			        instruments = JSON.parse(http.responseText)["instruments"];
+					renderCheckboxes(instruments);
+			    }
+			}
+			http.send(params);
+		}
+
+		function renderCheckboxes(instruments){
+			var form = document.getElementById("form");
+			for (var i=0; i < instruments.length; i++) {
+				instrument = instruments[i];
+				form.innerHTML += `<div class="select-wrapper"><input class="instrument-checkbox" type="checkbox" name="instrument${i+1}" value="${instrument}"></input><label for="instrument${i+1}">${instrument}</label></div>`;
+			}
+		}
+
+		function updateCheckboxListeners() {
+			var checkboxes = document.getElementsByClassName('instrument-checkbox');
+			Array.from(checkboxes).forEach(function(element){
+				element.addEventListener("click", updateInstruments); // run function updateActive when any song is clicked
+			});
+		}
+		updateCheckboxListeners();
+
+		function updateInstruments() {
+			currentInstrument = this.value;
+			console.log(currentInstrument);
+			console.log(allSelectedInstruments);
+			if (allSelectedInstruments.includes(currentInstrument)) {
+				console.log(allSelectedInstruments.indexOf(currentInstrument));
+				allSelectedInstruments.splice(allSelectedInstruments.indexOf(currentInstrument), 1);
+			}
+			else {
+				allSelectedInstruments.push(currentInstrument);
+			}
+			console.log(allSelectedInstruments);
+			var instruments = document.getElementById("instruments");
+			instruments.value = allSelectedInstruments;
+		}
+
+		function updateRemoveListeners() {
+			var selectedSongButtons = document.getElementsByClassName('remove-item');
+			Array.from(selectedSongButtons).forEach(function(element){
+	  			element.addEventListener("click", removeSelected); // run function updateActive when any song is clicked
+			});
+		}
+		updateRemoveListeners();
+
+		function removeSelected() {
+			this.parentElement.remove();
+			var parentValue = parseInt(this.parentElement.getAttribute("data-id"));
+			allSelectedSongs.splice(allSelectedSongs.indexOf(parentValue), 1);
+			document.getElementById("songs").value = allSelectedSongs;
+		}
+
+		function updateAddListeners() {
+			var searchResultsButtons = document.getElementsByClassName('add-item');
+			Array.from(searchResultsButtons).forEach(function(element){
+	  			element.addEventListener("click", addSelected); // run function updateActive when any song is clicked
+			});
+		}
+		updateAddListeners();
+
+		function addSelected(){
+			var parentSongName = this.parentElement.textContent.replace("+", "");
+			var parentValue = parseInt(this.parentElement.getAttribute("data-id"));
+			var selectedSongs = document.getElementById("selected-songs");
+			selectedSongs.innerHTML += `<div class="song-item selected-song-item" data-id=${parentValue}>${parentSongName}<button type="button" class="remove-item">X</button></div> <!-- .song-item -->`
+			updateRemoveListeners();
+			allSelectedSongs.push(parentValue);
+			document.getElementById("songs").value = allSelectedSongs;
+			/*
+			we should have a dictionary with the name of the song, or a uuid as the key (could let windows take care of this with (1) etc) and the instruments in the song as the values
+			pass this dict from python to js
+			then, when the user clicks on the song, we retrieve the list of instruments by using the key which will be passed as this.innerHTML or this.value and render the instrument checkboxes
+			needs to initially be set to first song's instruments
+			maybe run whole func with first item as this instead of adding extra code for first
+			*/
+			// renderCheckboxes(instruments);
+		}
+		if ( window.history.replaceState ) {
+		  window.history.replaceState( null, null, window.location.href );
+		}
+</script>
+</html>

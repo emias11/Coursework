@@ -1,0 +1,129 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+/* Wrapper */
+
+#wrapper {
+	margin: 100px auto;
+	position: relative;
+	border: 1px solid black;
+	height: 400px;
+	width: 900px;
+}
+
+
+/* Search */
+
+#wrapper #song-select form#search {
+	width: 350px;
+	height: 30px;
+	position: fixed;
+}
+
+#wrapper #song-select input[type="text"] {
+	width: 300px;
+	display: inline-table;
+	border: 0;
+	height: 30px;
+}
+
+#wrapper #song-select input[type="submit"] {
+	width: 50px;
+	display: inline-table;
+	float: right;
+	height: 30px;
+	border: 0;
+	background-color: red;
+}
+
+
+/* Song items */
+
+#wrapper #song-select {
+	width: 350px;
+	height: 400px;
+	max-height: 400px;
+	display: block;
+	float: left;
+	/*direction: rtl;*/
+}
+
+#wrapper #song-item-wrapper {
+	width: 350px;
+	height: 370px;
+	max-height: 400px;
+	overflow-y: scroll;
+	margin-top: 30px;
+	/*direction: rtl;*/
+}
+
+#wrapper .song-item {
+	width: calc(100% - 40px);
+	padding: 10px 20px;
+	background-color: green;
+	margin-bottom: 10px;
+	display: inline-table;
+	/*direction:ltr;*/
+}
+
+#wrapper .song-item:last-child {
+	margin-bottom: 0px;
+}
+
+#wrapper #selected-songs {
+	width: 350px;
+	height: 400px;
+	max-height: 400px;
+	overflow-y: scroll;
+	display: block;
+	float: left;
+	/*direction: rtl;*/
+}
+
+#wrapper button.add-item, #wrapper button.remove-item {
+	display: inline-table;
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	border: 0;
+	background-color: red;
+	float: right;
+	text-align: center;
+}
+
+/* Instrument select */
+
+#wrapper #instrument-select {
+	width: 200px;
+	float: right;
+	display: block;
+}
+
+#wrapper #instrument-select form {
+	margin: 20px;
+}
+
+#wrapper #instrument-select .select-wrapper {
+	margin-bottom: 5px;
+}
+
+#wrapper #instrument-select .select-wrapper label {
+	margin-left: 5px;
+}
+
+#instrument-select input[type="submit"] {
+	position: absolute;
+	bottom: -75px;
+	margin: 0 auto;
+	left: 0;
+	right: 0;
+	outline: none;
+	border: 1px solid green;
+	padding: 12px 24px;
+	text-transform: uppercase;
+	background-color: green;
+	color: #fff;
+	cursor: pointer;
+}
