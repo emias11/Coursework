@@ -59,7 +59,8 @@ def main():
     mid.tracks.append(track)
     mid.ticks_per_beat = ticksperbeat
     track.ticks_per_beat = ticksperbeat
-    print(channels_list_dict)
+
+
     generate_note_on_offs(channels_list_dict[60], track)
     note_message_list = generate_note_on_offs(channels_list_dict[60], track)
     append_notes(note_message_list, track)
@@ -71,27 +72,4 @@ def main():
 if __name__ == '__main__':
     main()
 
-"""
-def get_new_delta_time(delta_time, cumulative_time):
-    new_delta_time = cumulative_time - delta_time
-    return new_delta_time
-"""
-
-"""
-generated = note_to_messages(57, 800)
-
-bpm = 1000
-tempo = mido.midifiles.units.bpm2tempo(bpm)
-
-track.append(mido.MetaMessage('set_tempo', tempo=tempo, time=0))
-track.append(generated[0])
-track.append(generated[1])
-track.append(mido.MetaMessage('end_of_track', time=0))
-"""
-
-
-# track.append(mido.Message(message0))
-#track.append(mido.Message(message1))
-#track.append(mido.Message(message2))
-# track.append(mido.Message(message3))
 

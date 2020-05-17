@@ -9,6 +9,7 @@ def get_song_inputs(msgs):
     # need something to get program list from songs (remember its a dict with channels and corresponding programs)
     # N.B. the songs should be retrieved in regulate_tracks and brought here, not retrieved here
     # ticks_per_beat = 480
+    print("dict is returned in format {program: channel}")
     channels_dict = get_channels_dict(msgs)
     print(channels_dict)
     programs = input("What programs do you want to include in the song?")
@@ -86,7 +87,6 @@ def main():
     make_lists_for_all_parameters(8, list1) # NOTE YOU CHANGE THE CHANNEL HERE IT IS HARD CODED
     #print(get_lists_for_all_channels(channels, list1))
     channels_lists_dict = get_lists_for_all_channels(channels, list1)
-    print(channels_lists_dict)
     return channels_lists_dict
 
 
