@@ -10,7 +10,7 @@ def scrape_results(search_query):
         return None
     unordered_lists = soup.find_all("ul")[1]
     lists = unordered_lists.find_all("li")
-    results = [[lst.text.replace("\n", "").split(" - download")[0], lst.find("a")["href"]] for lst in lists]
+    results = [{"name": lst.text.replace("\n", "").split(" - download")[0], "url": lst.find("a")["href"]} for lst in lists]
     return results
 
 

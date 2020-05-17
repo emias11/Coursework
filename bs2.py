@@ -8,7 +8,8 @@ def scrape_results(search_query):
 	html = requests.get(f"https://bitmidi.com/search/?q={search_query}").text
 	json_data = get_json(html)
 	page_total = json_data["views"]["search"][search_query]["pageTotal"]
-	midi_with_names = get_midi_from_json(json_data)
+	midi_with_names = []
+	midi_with_names += get_midi_from_json(json_data)
 	for i in range(1, page_total):
 		html = requests.get(f"https://bitmidi.com/search/?q={search_query}&page={i}").text
 		json_data = get_json(html)
@@ -18,7 +19,7 @@ def scrape_results(search_query):
 
 def get_midi_from_json(json_data):
 	all_midis = json_data["data"]["midis"]
-	midi_with_names = [[all_midis[key]["name"], "https://bitmidi.com/uploads/" + str(all_midis[key]["id"])] for key in all_midis]
+	midi_with_names = [{"name": all_midis[key]["name"], "url": "https://bitmidi.com/uploads/" + str(all_midis[key]["id"])} for key in all_midis]
 	return midi_with_names
 
 

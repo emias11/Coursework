@@ -18,7 +18,7 @@
 				<div id="song-item-wrapper">
 					{% if amount %}
 						{% for i in range(amount) %}
-							<div data-id={{i}} class="song-item search-song-item">{{search_results[i][0]}}<button type="button" class="add-item">+</button></div> <!-- .song-item -->
+							<div data-id={{i}} class="song-item search-song-item">{{search_results[i]["name"]}}<button type="button" class="add-item">+</button></div> <!-- .song-item -->
 							{% endfor %}
 					{% endif %}
 				</div> <!-- #song-item-wrapper -->
@@ -72,6 +72,7 @@
 				instrument = instruments[i];
 				form.innerHTML += `<div class="select-wrapper"><input class="instrument-checkbox" type="checkbox" name="instrument${i+1}" value="${instrument}"></input><label for="instrument${i+1}">${instrument}</label></div>`;
 			}
+			updateCheckboxListeners();
 		}
 
 		function updateCheckboxListeners() {
