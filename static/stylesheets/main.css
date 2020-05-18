@@ -1,81 +1,109 @@
 * {
 	margin: 0;
 	padding: 0;
+	outline: none;
+  	font-family: 'Source Sans Pro', sans-serif;
+}
+
+h1 {
+	text-align: center;
+	text-transform: uppercase;
+	letter-spacing: 1.5px;
+	margin-top: 75px;
 }
 
 /* Wrapper */
 
 #wrapper {
-	margin: 100px auto;
+	margin: 50px auto;
 	position: relative;
-	border: 1px solid black;
-	height: 400px;
-	width: 900px;
+	height: 500px;
+	width: 1100px;
+	border-radius: 30px;
+	box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+	background-color: #fafafa;
+	font-size: 13px;
 }
 
 
 /* Search */
 
 #wrapper #song-select form#search {
-	width: 350px;
-	height: 30px;
-	position: fixed;
+	width: 450px;
+	height: 50px;
 }
 
 #wrapper #song-select input[type="text"] {
-	width: 300px;
-	display: inline-table;
+	width: 330px;
+	display: inline-block;
 	border: 0;
-	height: 30px;
+	height: 50px;
+	padding: 0px 20px;
 }
 
 #wrapper #song-select input[type="submit"] {
-	width: 50px;
+	width: 80px;
 	display: inline-table;
 	float: right;
-	height: 30px;
+	height: 50px;
 	border: 0;
-	background-color: red;
+	background-color: #ddd;
+	font-size: 11.5px;
+	letter-spacing: 1px;
+	cursor: pointer;
 }
 
 
 /* Song items */
 
 #wrapper #song-select {
-	width: 350px;
-	height: 400px;
-	max-height: 400px;
+	width: 450px;
+	height: 500px;
+	max-height: 500px;
 	display: block;
 	float: left;
+	max-width: 450px;
+	overflow-x: hidden;
 	/*direction: rtl;*/
+	border-radius: 30px 0px 0px 30px;
 }
 
 #wrapper #song-item-wrapper {
-	width: 350px;
-	height: 370px;
-	max-height: 400px;
+	width: 450px;
+	max-width: 450px;
+	overflow-x: hidden;
+	height: 450px;
+	max-height: 450px;
 	overflow-y: scroll;
-	margin-top: 30px;
 	/*direction: rtl;*/
 }
 
 #wrapper .song-item {
-	width: calc(100% - 40px);
-	padding: 10px 20px;
-	background-color: green;
+	width: 100%;
+	background-color: #dea5a4;
 	margin-bottom: 10px;
 	display: inline-table;
+	height: 46px;
 	/*direction:ltr;*/
 }
+
+#wrapper .song-item p {
+	display: inline-table;
+	line-height:46px;
+	max-height: 46px;
+	vertical-align: middle;
+	margin-left: 20px;
+}
+
 
 #wrapper .song-item:last-child {
 	margin-bottom: 0px;
 }
 
 #wrapper #selected-songs {
-	width: 350px;
-	height: 400px;
-	max-height: 400px;
+	width: 450px;
+	height: 500px;
+	max-height: 500px;
 	overflow-y: scroll;
 	display: block;
 	float: left;
@@ -84,21 +112,24 @@
 
 #wrapper button.add-item, #wrapper button.remove-item {
 	display: inline-table;
-	width: 16px;
-	height: 16px;
-	border-radius: 50%;
+	width: 46px;
+	height: 46px;
 	border: 0;
-	background-color: red;
+	background-color: #ddd;
 	float: right;
 	text-align: center;
+	cursor: pointer;
 }
 
 /* Instrument select */
 
 #wrapper #instrument-select {
 	width: 200px;
+	max-height: 500px;
 	float: right;
 	display: block;
+	text-align: center;
+	overflow-y: auto;
 }
 
 #wrapper #instrument-select form {
@@ -107,23 +138,59 @@
 
 #wrapper #instrument-select .select-wrapper {
 	margin-bottom: 5px;
+	text-align: left;
+}
+
+#wrapper #instrument-select .select-wrapper input[type="checkbox"] {
 }
 
 #wrapper #instrument-select .select-wrapper label {
 	margin-left: 5px;
 }
 
+#instrument-select button#update {
+	outline: none;
+	border: 0;
+	padding: 16px 24px;
+	text-transform: uppercase;
+	background-color: #ddd;
+	color: #000;
+	cursor: pointer;
+	bottom: 0;
+	font-size: 11.5px;
+	letter-spacing: 1px;
+}
+
 #instrument-select input[type="submit"] {
 	position: absolute;
-	bottom: -75px;
+	bottom: -95px;
 	margin: 0 auto;
-	left: 0;
+	left: -100px;
 	right: 0;
 	outline: none;
-	border: 1px solid green;
-	padding: 12px 24px;
+	border: 0;
+	padding: 16px 24px;
 	text-transform: uppercase;
-	background-color: green;
-	color: #fff;
+	background-color: #dea5a4;
+	color: #000;
 	cursor: pointer;
+	font-size: 11.5px;
+	letter-spacing: 1px;
+}
+
+#instrument-select button#save {
+	position: absolute;
+	bottom: -95px;
+	margin: 0 auto;
+	left: 0;
+	right: -100px;
+	outline: none;
+	border: 0;
+	padding: 16px 24px;
+	text-transform: uppercase;
+	background-color: #dea5a4;
+	color: #000;
+	cursor: pointer;
+	font-size: 11.5px;
+	letter-spacing: 1px;
 }
