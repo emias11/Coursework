@@ -1,6 +1,8 @@
 from flask import render_template, Flask, jsonify, redirect, request, url_for
 import bs
 import bs2
+import os
+import glob
 
 app = Flask(__name__)
 results = []
@@ -11,8 +13,8 @@ def load_app():
 	global results
 	if request.method == "GET":
 		return render_template("index.html")
-	else:
-		query = request.form["query"]
+	else:  # they click search
+		query = request.form["query"]  # get search term
 		result1 = bs.main(query)
 		result2 = bs2.main(query)
 		if result1 and not result2:
@@ -32,21 +34,25 @@ def load_app():
 
 @app.route("/retrieve_instruments", methods=["POST"])
 def retrieve_instruments():
+	# we currently use "Guitar" etc. best to use the ID or whatever instead? need a dict somewhere anyway to convert
 	global results
 	data = request.json
 	songs = data["songs"]
-	instruments = ["Guitar", "Piano"]
-	print(songs)
+	instruments = ["Guitar", "Piano"]  # hardcoded for now
+	files = glob.glob("songs/*")
+	for f in files:
+		os.remove(f)  # clear songs directory
 	for song in songs:
-		print(results[song])
-	# download songs. we have the download links stored in results global variable
-	# only download if not already downloaded!
-	# extract instruments from new downloaded as well as already downloaded
-	# return in this function
+		url = results[song]["url"]
+		name = results[song]["name"]
+		bs.save_midi(url, name)
+		# pass to regulate tracks
+		# pass input messages to probabilities.py
+		# parse response and add to instruments list
 	return jsonify({"instruments": instruments})
 
 
-@app.route("/process", methods=["POST"])
+@app.route("/play", methods=["POST"])
 def process():
 	data = request.form  # this will be the songs selected and the instruments selected
 	songs = [int(i) for i in data["songs"].split(",")]
@@ -54,6 +60,7 @@ def process():
 	print(songs)
 	print(instruments)
 	# do some tings with it, render with results. play song or give them the file basically
+	# process.html probably useless then
 	return render_template("process.html")
 
 

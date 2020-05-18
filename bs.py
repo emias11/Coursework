@@ -18,7 +18,7 @@ def save_midi(url, name):
     song = requests.get(url)
     statuscode = song.status_code
     if statuscode == 200:
-        open(f"{name}.mid", "wb").write(song.content)
+        open(f"songs/{name}.mid", "wb").write(song.content)
         return name
     else:
         return "error"
