@@ -13,8 +13,8 @@ def load_app():
 	global results
 	if request.method == "GET":
 		return render_template("index.html")
-	else:
-		query = request.form["query"]
+	else:  # they click search
+		query = request.form["query"]  # get search term
 		result1 = bs.main(query)
 		result2 = bs2.main(query)
 		if result1 and not result2:
@@ -38,10 +38,10 @@ def retrieve_instruments():
 	global results
 	data = request.json
 	songs = data["songs"]
-	instruments = ["Guitar", "Piano"]
+	instruments = ["Guitar", "Piano"]  # hardcoded for now
 	files = glob.glob("songs/*")
 	for f in files:
-		os.remove(f)
+		os.remove(f)  # clear songs directory
 	for song in songs:
 		url = results[song]["url"]
 		name = results[song]["name"]

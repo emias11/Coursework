@@ -9,12 +9,10 @@
 		<h1>The Groovemaker</h1>
 		<div id="wrapper">
 			<div id="song-select">
-				<!-- fix scrollbar going behind search -->
 				<form id="search" action="/" method="post">
 					<input type="text" placeholder="Search" name="query" id="search-box"></input>
 					<input type="submit" id="search-btn" value="SEARCH"></input>
 				</form>
-				<!-- songs of same name will cause a problem, use a uuid? -->
 				<div id="song-item-wrapper">
 					{% if amount %}
 						{% for i in range(amount) %}
@@ -24,12 +22,9 @@
 				</div> <!-- #song-item-wrapper -->
 			</div> <!-- #song-select -->
 			<div id="selected-songs">
-				<!--<div class="song-item selected-song-item">Come A Little Closer 3<button type="button" class="remove-item">X</button></div>-->
 			</div>
 			<div id="instrument-select">
 				<form action="/play" id="form" method="post">
-					<!-- maybe output instruments as a list as opposed to instrument1=..., etc
-					might be easier to set up custom POST to flask API -->
 					<input type="hidden" name="songs" id="songs" value=""></input>
 					<input type="hidden" name="instruments" id="instruments" value=""></input>
 					<input type="submit" value="Play"></input>
@@ -49,20 +44,18 @@
 
 		function updateInstrumentBoxes() {
 			/*
-			send allSelectedSongs to python. download them (if not already downloaded), and return the list of instruments
-			use variable instruments like below
-			maybe clear the innerHTML first, or at least clear all the previous checkboxes
-			then run updateCheckboxListeners();
+			sends POST request to flask with the selected selectedSongs
+			flask returns list of instruments found in these selectedSongs
+			we update checkboxes
 			*/
 			var http = new XMLHttpRequest();
 			var url = "/retrieve_instruments";
 			var params = JSON.stringify({"songs": allSelectedSongs});
 			http.open("POST", url, true);
 
-			//Send the proper header information along with the request
 			http.setRequestHeader("Content-type", "application/json;charset=UTF-8");
 
-			http.onreadystatechange = function() {//Call a function when the state changes.
+			http.onreadystatechange = function() {
 			    if(http.readyState == 4 && http.status == 200) {
 			        instruments = JSON.parse(http.responseText)["instruments"];
 					renderCheckboxes(instruments);
@@ -72,12 +65,12 @@
 		}
 
 		function renderCheckboxes(instruments){
-			var checkboxWrappers = document.getElementsByClassName('select-wrapper');
-			for (var i=checkboxWrappers.length -1;i>=0;i--) {
+			var checkboxWrappers = document.getElementsByClassName('select-wrapper'); // find checkbox wrappers
+			for (var i=checkboxWrappers.length -1;i>=0;i--) { // remove all current checkboxes
 				checkboxWrappers[i].remove();
 			}
 			var form = document.getElementById("form");
-			for (var i=0; i < instruments.length; i++) {
+			for (var i=0; i < instruments.length; i++) {  // add a checkbox for each new instrument
 				instrument = instruments[i];
 				form.innerHTML += `<div class="select-wrapper"><input class="instrument-checkbox" type="checkbox" name="instrument${i+1}" value="${instrument}"></input><label for="instrument${i+1}">${instrument}</label></div>`;
 			}
@@ -85,37 +78,39 @@
 		}
 
 		function updateCheckboxListeners() {
+			// add listeners (checks for being clicked, runs function) to checkboxes
 			var checkboxes = document.getElementsByClassName('instrument-checkbox');
 			Array.from(checkboxes).forEach(function(element){
-				element.addEventListener("click", updateInstruments); // run function updateActive when any song is clicked
+				element.addEventListener("click", updateInstruments)
 			});
 		}
 
 		function updateInstruments() {
+			/*
+			update instrument list in form (hidden input)
+			*/
 			currentInstrument = this.value;
-			console.log(currentInstrument);
-			console.log(allSelectedInstruments);
 			if (allSelectedInstruments.includes(currentInstrument)) {
-				console.log(allSelectedInstruments.indexOf(currentInstrument));
 				allSelectedInstruments.splice(allSelectedInstruments.indexOf(currentInstrument), 1);
 			}
 			else {
 				allSelectedInstruments.push(currentInstrument);
 			}
-			console.log(allSelectedInstruments);
 			var instruments = document.getElementById("instruments");
 			instruments.value = allSelectedInstruments;
 		}
 
 		function updateRemoveListeners() {
+			// add listeners (checks for being clicked, runs function) to X buttons
 			var selectedSongButtons = document.getElementsByClassName('remove-item');
 			Array.from(selectedSongButtons).forEach(function(element){
-	  			element.addEventListener("click", removeSelected); // run function updateActive when any song is clicked
+	  			element.addEventListener("click", removeSelected);
 			});
 		}
 		updateRemoveListeners();
 
 		function removeSelected() {
+			// removes songs from selected list when you press X
 			this.parentElement.remove();
 			var parentValue = parseInt(this.parentElement.getAttribute("data-id"));
 			allSelectedSongs.splice(allSelectedSongs.indexOf(parentValue), 1);
@@ -123,6 +118,7 @@
 		}
 
 		function updateAddListeners() {
+			// add listeners (checks for being clicked, runs function) to + buttons
 			var searchResultsButtons = document.getElementsByClassName('add-item');
 			Array.from(searchResultsButtons).forEach(function(element){
 	  			element.addEventListener("click", addSelected); // run function updateActive when any song is clicked
@@ -131,6 +127,7 @@
 		updateAddListeners();
 
 		function addSelected(){
+			// adds songs to selected list when you press X
 			var parentSongName = this.parentElement.textContent.replace("+", "");
 			var parentValue = parseInt(this.parentElement.getAttribute("data-id"));
 			var selectedSongs = document.getElementById("selected-songs");
@@ -138,16 +135,10 @@
 			updateRemoveListeners();
 			allSelectedSongs.push(parentValue);
 			document.getElementById("songs").value = allSelectedSongs;
-			/*
-			we should have a dictionary with the name of the song, or a uuid as the key (could let windows take care of this with (1) etc) and the instruments in the song as the values
-			pass this dict from python to js
-			then, when the user clicks on the song, we retrieve the list of instruments by using the key which will be passed as this.innerHTML or this.value and render the instrument checkboxes
-			needs to initially be set to first song's instruments
-			maybe run whole func with first item as this instead of adding extra code for first
-			*/
-			// renderCheckboxes(instruments);
 		}
+
 		if ( window.history.replaceState ) {
+			// stops browser asking you to confirm resubmission of form on refresh
 		  window.history.replaceState( null, null, window.location.href );
 		}
 </script>
