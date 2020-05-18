@@ -48,8 +48,8 @@ def make_lists_for_all_parameters(channel, msgs):
     :param msgs: a list of all the messages from a track
     :return: using probabilities.py, returns a sequence for each variable for a channel
     """
-    song_note_length = 40
-    dicts = get_final_dicts(msgs, channel) # this is from probabilities.py
+    song_note_length = 500
+    dicts = get_final_dicts(msgs, channel) # this is from probabilities.py HELLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
     # dict_list = [dicts[0], dicts[1], dicts[2], dicts[3], dicts[4]]
     # pitch_dict, velocity_on_dict, velocity_off_dict, note_lengths_dict, delays_dict
     pitch_dict, velocity_on_dict, velocity_off_dict, note_lengths_dict, delays_dict = dicts[0], dicts[1], dicts[2], dicts[3], dicts[4]
@@ -63,7 +63,7 @@ def make_lists_for_all_parameters(channel, msgs):
     new_delays = make_list_for_parameter(song_note_length-1, delays_dict, delays_seed)
     new_velocity_on = make_list_for_parameter(song_note_length, velocity_on_dict, velocity_on_seed)
     new_velocity_off = make_list_for_parameter(song_note_length, velocity_off_dict, velocity_off_seed)
-    return [song_note_length, new_pitch, new_note_lengths, new_delays, new_velocity_on, new_velocity_off]
+    return [new_pitch, new_note_lengths, new_delays, new_velocity_on, new_velocity_off]
 
 
 def get_lists_for_all_channels(channels, msgs):
@@ -84,7 +84,7 @@ def main():
     output, ticksperbeat = regulate_tracks.main()
     list1 = output
     channels = get_song_inputs(list1)
-    make_lists_for_all_parameters(8, list1) # NOTE YOU CHANGE THE CHANNEL HERE IT IS HARD CODED
+    make_lists_for_all_parameters(2, list1)  # NOTE YOU CHANGE THE CHANNEL HERE IT IS HARD CODED
     #print(get_lists_for_all_channels(channels, list1))
     channels_lists_dict = get_lists_for_all_channels(channels, list1)
     return channels_lists_dict

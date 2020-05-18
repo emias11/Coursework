@@ -12,21 +12,6 @@ def get_channel_note_msgs(input_msgs, channel):
                 channel_msgs.append(msg)
     return channel_msgs
 
-"""
-def get_channels_dict(input_msgs):
-    channels_dict = {}
-    # {program: channel}
-    for item in input_msgs:
-        msg = item[0]
-        if msg.note not in channels_dict:
-            channels_dict[msg.note] = msg.channel
-    keys = list(channels_dict.keys())
-    for key in keys:
-        if len(get_channel_note_msgs(input_msgs, channels_dict[key])) == 0:
-            del channels_dict[key]
-    return channels_dict
-"""
-
 
 def get_channels_dict(input_msgs):
     """
@@ -212,7 +197,7 @@ def main():
     output, ticksperbeat = regulate_tracks.main()
     list1 = output
     channels = (get_channels_dict(list1)).values()
-    get_final_dicts(list1, 8)
+    get_final_dicts(list1, 2)
     #THIS IS A PLACEHOLDER VALUE (for a channel
     # THIS IS A PLACEHOLDER VALUE
     # THIS IS A PLACEHOLDER VALUE

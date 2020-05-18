@@ -48,6 +48,7 @@ def filter_and_time(mid, all_messages):  # for each track (then message) do the 
                 # all_messages.append([msg, current_time])
     return all_messages, msgwithtempos
 
+
 def unify_program_changes(list_of_msgs):
     new_list_of_msgs = []
     channels_and_programs = {}
@@ -105,13 +106,15 @@ def main():  # for each midi file do the following
                 all_lists.pop(i)
 
     all_lists = unify_program_changes(all_lists)
-
+    """
+    little test thing
     count = 0
     for item in all_lists:
         if item[0].type == 'program_change':
             print(item[0])
             count += 1
     print(count)
+    """
 
     return all_lists, ticksperbeat
 
