@@ -8,14 +8,13 @@ def get_song_inputs(msgs):
     # need something to get songs
     # need something to get program list from songs (remember its a dict with channels and corresponding programs)
     # N.B. the songs should be retrieved in regulate_tracks and brought here, not retrieved here
-    # ticks_per_beat = 480
     print("dict is returned in format {program: channel}")
     channels_dict = get_channels_dict(msgs)
     print(channels_dict)
     programs = input("What programs do you want to include in the song?")
     programs = programs.split(", ")
     programs_channels = [channels_dict[int(program)] for program in programs]
-    return programs_channels
+    return programs_channels, programs
 
 
 def make_list_for_parameter(length, par_dict, par_seed):
@@ -49,7 +48,7 @@ def make_lists_for_all_parameters(channel, msgs):
     :return: using probabilities.py, returns a sequence for each variable for a channel
     """
     song_note_length = 500
-    dicts = get_final_dicts(msgs, channel) # this is from probabilities.py HELLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+    dicts = get_final_dicts(msgs, channel)  # this is from probabilities.py HELLOOOOOOOOOOOOOOO
     # dict_list = [dicts[0], dicts[1], dicts[2], dicts[3], dicts[4]]
     # pitch_dict, velocity_on_dict, velocity_off_dict, note_lengths_dict, delays_dict
     pitch_dict, velocity_on_dict, velocity_off_dict, note_lengths_dict, delays_dict = dicts[0], dicts[1], dicts[2], dicts[3], dicts[4]
@@ -83,10 +82,13 @@ def get_lists_for_all_channels(channels, msgs):
 def main():
     output, ticksperbeat = regulate_tracks.main()
     list1 = output
-    channels = get_song_inputs(list1)
-    make_lists_for_all_parameters(2, list1)  # NOTE YOU CHANGE THE CHANNEL HERE IT IS HARD CODED
+    channels, programs = get_song_inputs(list1)
+    """
+    #make_lists_for_all_parameters(2, list1)  # NOTE YOU CHANGE THE CHANNEL HERE IT IS HARD CODED
     #print(get_lists_for_all_channels(channels, list1))
+    """
     channels_lists_dict = get_lists_for_all_channels(channels, list1)
+    # print(channels_lists_dict)
     return channels_lists_dict
 
 

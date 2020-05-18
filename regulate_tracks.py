@@ -76,6 +76,7 @@ def unify_program_changes(list_of_msgs):
         else:
             new_list_of_msgs.append(item)
     list_of_msgs = new_list_of_msgs
+    list_of_msgs = sorted(list_of_msgs, key=lambda x: x[1])
     return list_of_msgs
 
 

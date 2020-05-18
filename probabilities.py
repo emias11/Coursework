@@ -4,7 +4,6 @@ import regulate_tracks
 
 def get_channel_note_msgs(input_msgs, channel):
     # this just gets the note msgs (with cumulative time) for all of a particular channel
-    # this function works
     channel_msgs = []
     for msg in input_msgs:
         if msg[0].type != "set_tempo" and msg[0].type != "program_change":
@@ -39,28 +38,29 @@ def notes_delays(channel_msgs):
     just average time between note on/off msgs, as it's the length of each pitch's note
     in order)
     """
+    """
+    for i in range(len(channel_msgs)):
+        msg = channel_msgs[i]
+        next_msgs = channel_msgs[i+1]
+        if msg[1] > next_msgs[1]:
+            print("uh oh")
+    """
     note_on_difs, note_lengths = [], []
-    current_time_note_on = -1
-    """
-    "temp" variable to get differences in time
-    -1 is a placeholder value, is replaced as soon as get first note on msg
-    set at -1 as this could never be an actual time difference
-    """
     for i in range(len(channel_msgs)):
         msg = channel_msgs[i]
         y = 1
         note = msg[0].note
-        bool = True
+        boole = True
         if msg[0].type == 'note_on':
-            if current_time_note_on == -1:
+            if i == 0:
                 current_time_note_on = msg[1]
             else:
                 note_on_difs.append(msg[1] - current_time_note_on)
                 current_time_note_on = msg[1]
-            while bool:
+            while boole:
                 if i != (len(channel_msgs)) - 1:
                     if channel_msgs[i + y][0].type == 'note_off' and channel_msgs[i + y][0].note == note:
-                        bool = False
+                        boole = False
                         note_lengths.append(channel_msgs[i + y][1] - msg[1])
                     else:
                         y += 1
@@ -96,6 +96,10 @@ def make_delay_and_len_dicts(note_on_difs, note_lengths):
     :param note_lengths: a list of the time differences between all note off messages for one channel
     :return: dicts for the delays between note on messages and for the length of notes
     """
+    for dif in note_on_difs:
+        if dif < 0:
+            print("fuck")
+
     delays_dict = list_to_dict(note_on_difs)
     note_lengths_dict = list_to_dict(note_lengths)
     return delays_dict, note_lengths_dict
@@ -197,18 +201,16 @@ def main():
     output, ticksperbeat = regulate_tracks.main()
     list1 = output
     channels = (get_channels_dict(list1)).values()
-    get_final_dicts(list1, 2)
-    #THIS IS A PLACEHOLDER VALUE (for a channel
-    # THIS IS A PLACEHOLDER VALUE
-    # THIS IS A PLACEHOLDER VALUE
-    # THIS IS A PLACEHOLDER VALUE
-    # THIS IS A PLACEHOLDER VALUE
-    # THIS IS A PLACEHOLDER VALUE
-    # THIS IS A PLACEHOLDER VALUE
+    get_final_dicts(list1, 9)
+    # THIS IS A PLACEHOLDER VALUE (for a channel)
+    # doesn't actually matter unless you're testing as probabilities. main() not used elsewhere
+
     """
+
     for channel in channels:
         for dict1 in get_final_dicts(list1, channel): # put the channel in here
             print(dict1)
+    
     """
 
 
