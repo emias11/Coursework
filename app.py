@@ -9,7 +9,6 @@ results = []
 @app.route("/", methods=["GET", "POST"])
 def load_app():
 	global results
-	# maybe better to have subdictionaries like {"name": "Money Money Money", "url": "..."}
 	if request.method == "GET":
 		return render_template("index.html")
 	else:
@@ -49,13 +48,12 @@ def retrieve_instruments():
 
 @app.route("/process", methods=["POST"])
 def process():
-	if request.method == "POST":
-		data = request.form  # this will be the songs selected and the instruments selected
-		songs = [int(i) for i in data["songs"].split(",")]
-		instruments = data["instruments"].split(",")
-		print(songs)
-		print(instruments)
-	# do some tings with it
+	data = request.form  # this will be the songs selected and the instruments selected
+	songs = [int(i) for i in data["songs"].split(",")]
+	instruments = data["instruments"].split(",")
+	print(songs)
+	print(instruments)
+	# do some tings with it, render with results. play song or give them the file basically
 	return render_template("process.html")
 
 
