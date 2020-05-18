@@ -32,7 +32,9 @@ def generate_note_on_offs(list_of_lists, track):
 
 
 def append_notes(note_message_list, track):
-    #for all messages, index the list backwards then take the last instance. With one instrument should just be all the notes  - maybe add dummy messages to test before u get bariables passing
+    # for all messages, index the list backwards then take the last instance.
+    # With one instrument should just be all the notes
+    # maybe add dummy messages to test before u get variables passing
     sorted_note_message_list = sorted(note_message_list, key=lambda x: x[1])
     # above sorts by second element of list which is time
     running_time = 0
@@ -59,7 +61,9 @@ def put_together_song(track, channels_list_dict, list1):
         if msg.type == 'program_change':
             msg.time = 0
             track.append(mido.Message('program_change', channel=msg.channel, program=msg.program, time=0))
+
     note_message_list = generate_note_on_offs(channels_list_dict[26], track)
+    # note_message_list is an ordered list of just msgs (no cumulative time) and their appropriate delta times
     print(note_message_list)
     append_notes(note_message_list, track)
 
