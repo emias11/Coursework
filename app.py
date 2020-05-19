@@ -5,6 +5,7 @@ import os
 import glob
 from construction import get_songs_msgs, get_instruments, play_song_or_save, programs_for_names
 from probabilities import get_channels_dict
+import uuid
 
 app = Flask(__name__)
 all_mid = []
@@ -23,23 +24,6 @@ we dont update songs unless they click update. not rly a problem, only because o
 
 @app.route("/", methods=["GET", "POST"])
 def load_app():
-	if request.method == "GET":
-		return render_template("index.html")
-	else:  # they click search
-		query = request.form["query"]  # get search term
-		result1 = bs.main(query)
-		result2 = bs2.main(query)
-		if result1 and not result2:
-			results = result1
-		elif result2 and not result1:
-			results = result2
-		elif result1 and result2:
-			results = result1 + result2
-		else:
-			return render_template("index.html")
-		search_results = {}
-		for i in range(len(results) - 1):
-			search_results[i] = results[i]
 	return render_template("index.html")
 
 
@@ -57,9 +41,9 @@ def search():
 		results = result1 + result2
 	search_results = {}
 	for i in range(len(results) - 1):
-		search_results[i] = results[i]
+		search_results[str(uuid.uuid4())] = results[i]
 	amount = len(search_results)
-	return jsonify({"results": results, "amount": amount})
+	return jsonify({"results": search_results, "amount": amount, "keys": list(search_results.keys())})
 
 
 @app.route("/retrieve_instruments", methods=["POST"])
@@ -67,12 +51,14 @@ def retrieve_instruments():
 	global all_mid
 	all_mid = []
 	selected_songs = request.json["selected_songs"]  # get search term
+	print(selected_songs)
 	files = glob.glob("songs/*")
 	for f in files:
 		os.remove(f)  # clear songs directory
 	failed_songs = []
-	print(selected_songs)
-	for song in selected_songs:
+	keys = selected_songs.keys()
+	for key in keys:
+		song = selected_songs[key]
 		url = song["url"]
 		name = song["name"]
 		if bs.save_midi(url, name):

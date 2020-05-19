@@ -17,16 +17,24 @@ send_post("/test", {"hi": "hello"}, function(response) {
 });
 */
 
-var allSelectedSongs = [];
+var allSelectedSongs = {};
 var allSelectedInstruments = [];
 var results = [];
 var amount = 0;
 
+function uuidv4() {
+  return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+  );
+}
+
 function removeSelected() {
 	// removes songs from selected list when you press X
 	this.parentElement.remove();
-	var parentValue = parseInt(this.parentElement.getAttribute("data-id"));
-	allSelectedSongs.splice(allSelectedSongs.indexOf(parentValue), 1);
+	var parentValue = this.parentElement.getAttribute("data-id");
+	// allSelectedSongs.splice(allSelectedSongs.indexOf(parentValue), 1);
+	delete allSelectedSongs[parentValue];
+	console.log(allSelectedSongs);
 }
 
 function updateRemoveListeners() {
@@ -40,11 +48,13 @@ function updateRemoveListeners() {
 function addSelected(){
 	// adds songs to selected list when you press X
 	var parentSongName = this.parentElement.textContent.replace("+", "");
-	var parentValue = parseInt(this.parentElement.getAttribute("data-id"));
+	var parentValue = this.parentElement.getAttribute("data-id");
 	var selectedSongs = document.getElementById("selected-songs");
 	selectedSongs.innerHTML += `<div class="song-item selected-song-item" data-id=${parentValue}><p>${parentSongName}</p><button type="button" class="remove-item">&#x2715;</button></div> <!-- .song-item -->`
 	updateRemoveListeners();
-	allSelectedSongs.push(parentValue);
+	allSelectedSongs[parentValue] = results[parentValue];
+	// allSelectedSongs[parentValue] = results[parentValue];
+	console.log(allSelectedSongs);
 }
 
 function updateAddListeners() {
@@ -60,15 +70,16 @@ function search() {
 	song_wrapper = document.getElementById("song-item-wrapper");
 	song_wrapper.innerHTML = "";
 	send_post("/search", {"query": search_query}, function(response) {
-		amount = response["amount"];
+		keys = response["keys"];
 		results = response["results"];
+		amount = response["amount"]
 		for (var i=0; i < amount; i++) {
-			song_wrapper.innerHTML += `<div data-id=${i} class="song-item search-song-item"><p>${results[i]["name"]}</p><button type="button" class="add-item">+</button></div> <!-- .song-item -->`;
+			key = keys[i];
+			song_wrapper.innerHTML += `<div data-id="${key}" class="song-item search-song-item"><p>${results[key]["name"]}</p><button type="button" class="add-item">+</button></div> <!-- .song-item -->`;
 		}
 		updateAddListeners();
 	});
 }
-
 
 function renderCheckboxes(instruments){
 	var checkboxWrappers = document.getElementsByClassName('select-wrapper'); // find checkbox wrappers
@@ -95,7 +106,7 @@ function updateInstruments() {
 	else {
 		allSelectedInstruments.push(currentInstrument);
 	}
-	console.log(allSelectedInstruments);
+	// console.log(allSelectedInstruments);
 }
 
 function updateCheckboxListeners() {
@@ -107,32 +118,21 @@ function updateCheckboxListeners() {
 }
 
 function retrieve_instruments() {
-	selectedSongs = [];
-	for (var i=0; i<allSelectedSongs.length; i++) {
-		selectedSongs.push(results[allSelectedSongs[i]]);
-	}
-	send_post("/retrieve_instruments", {"selected_songs": selectedSongs}, function(response) {
+	console.log(allSelectedSongs);
+	send_post("/retrieve_instruments", {"selected_songs": allSelectedSongs}, function(response) {
 		instruments = response["instruments"];
 		renderCheckboxes(instruments);
 	})
 }
 
 function savex() {
-	selectedSongs = [];
-	for (var i=0; i<allSelectedSongs.length; i++) {
-		selectedSongs.push(results[allSelectedSongs[i]["name"]]);
-	}
-	send_post("/save", {"selected_songs": selectedSongs, "instruments": allSelectedInstruments}, function(response) {
+	send_post("/save", {"instruments": allSelectedInstruments}, function(response) {
 		status = response["success"];
 	})
 }
 
 function playx() {
-	selectedSongs = [];
-	for (var i=0; i<allSelectedSongs.length; i++) {
-		selectedSongs.push(results[allSelectedSongs[i]]["name"]);
-	}
-	send_post("/play", {"selected_songs": selectedSongs, "instruments": allSelectedInstruments}, function(response) {
+	send_post("/play", {"instruments": allSelectedInstruments}, function(response) {
 		status = response["success"];
 	})
 }
