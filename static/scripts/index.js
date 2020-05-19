@@ -86,6 +86,7 @@ function renderCheckboxes(instruments){
 	for (var i=checkboxWrappers.length -1;i>=0;i--) { // remove all current checkboxes
 		checkboxWrappers[i].remove();
 	}
+	instruments.sort();
 	var form = document.getElementById("form");
 	for (var i=0; i < instruments.length; i++) {  // add a checkbox for each new instrument
 		instrument = instruments[i];
@@ -125,13 +126,13 @@ function retrieve_instruments() {
 	})
 }
 
-function savex() {
+function save_song() {
 	send_post("/save", {"instruments": allSelectedInstruments}, function(response) {
 		status = response["success"];
 	})
 }
 
-function playx() {
+function play_song() {
 	send_post("/play", {"instruments": allSelectedInstruments}, function(response) {
 		status = response["success"];
 	})
