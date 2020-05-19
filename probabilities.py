@@ -58,12 +58,15 @@ def notes_delays(channel_msgs):
                 note_on_difs.append(msg[1] - current_time_note_on)
                 current_time_note_on = msg[1]
             while boole:
-                if i != (len(channel_msgs)) - 1:
+                if i+y < len(channel_msgs):
                     if channel_msgs[i + y][0].type == 'note_off' and channel_msgs[i + y][0].note == note:
                         boole = False
                         note_lengths.append(channel_msgs[i + y][1] - msg[1])
                     else:
                         y += 1
+                else:
+                    note_lengths.append(0)
+                    boole = False
     return note_on_difs, note_lengths
 
 
@@ -96,9 +99,6 @@ def make_delay_and_len_dicts(note_on_difs, note_lengths):
     :param note_lengths: a list of the time differences between all note off messages for one channel
     :return: dicts for the delays between note on messages and for the length of notes
     """
-    for dif in note_on_difs:
-        if dif < 0:
-            print("fuck")
 
     delays_dict = list_to_dict(note_on_difs)
     note_lengths_dict = list_to_dict(note_lengths)

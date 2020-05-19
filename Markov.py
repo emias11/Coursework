@@ -4,6 +4,7 @@ import mido
 import numpy as np
 
 
+# THIS FUNCTION IS ONLY USED IF RUNNING MARKOV.MAIN()
 def get_song_inputs(msgs):
     # need something to get songs
     # need something to get program list from songs (remember its a dict with channels and corresponding programs)

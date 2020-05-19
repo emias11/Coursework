@@ -118,7 +118,7 @@ def main():  # for each midi file do the following
     # all_mid = ['major-scale.mid']
     # all_mid = ['Gloria-Mozart.MID.mid']
     # all_mid = ['BohemianRhapsody.mid']
-    # all_mid = [' (Yiruma).mid']
+    all_mid = [' (Yiruma).mid']
     all_mid = ['ItsBeginningToLookALotLikeChristmas.mid', 'BohemianRhapsody.mid']
     get_all_lists_and_tpb(all_mid)
 

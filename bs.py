@@ -19,9 +19,9 @@ def save_midi(url, name):
     statuscode = song.status_code
     if statuscode == 200:
         open(f"songs/{name}.mid", "wb").write(song.content)
-        return name
+        return True # changed from name
     else:
-        return "error"
+        return False
 
 
 def main(query):
