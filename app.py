@@ -37,8 +37,7 @@ def load_app():
 		search_results = {}
 		for i in range(len(results) - 1):
 			search_results[i] = results[i]
-		amount = len(search_results)
-	return render_template("index.html", search_results=search_results, amount=amount)
+	return render_template("index.html")
 
 
 @app.route("/search", methods=["POST"])
