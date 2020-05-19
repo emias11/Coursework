@@ -33,11 +33,6 @@ h1 {
 
 /* Search */
 
-#wrapper #song-select form#search {
-	width: 450px;
-	height: 50px;
-}
-
 #wrapper #song-select input[type="text"] {
 	width: 330px;
 	display: inline-block;
@@ -166,7 +161,7 @@ h1 {
 	letter-spacing: 1px;
 }
 
-#instrument-select input[type="submit"] {
+#instrument-select button#play {
 	position: absolute;
 	bottom: -95px;
 	margin: 0 auto;
