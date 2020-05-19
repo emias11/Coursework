@@ -79,14 +79,7 @@ def unify_program_changes(list_of_msgs):
     list_of_msgs = sorted(list_of_msgs, key=lambda x: x[1])
     return list_of_msgs
 
-
-def main():  # for each midi file do the following
-    # place-holder until database implemented
-    # all_mid = ['major-scale.mid']
-    # all_mid = ['Gloria-Mozart.MID.mid']
-    # all_mid = ['BohemianRhapsody.mid']
-    # all_mid = [' (Yiruma).mid']
-    all_mid = ['ItsBeginningToLookALotLikeChristmas.mid', 'BohemianRhapsody.mid']
+def get_all_lists_and_tpb(all_mid):
     all_lists = []
     ticksperbeat = 0
     for i in range(0, len(all_mid)):
@@ -98,12 +91,12 @@ def main():  # for each midi file do the following
             final_messages = all_messages + msgwithtempos
             final_messages = sorted(final_messages, key=lambda x: x[1])
             all_lists += final_messages
-    ticksperbeat = ticksperbeat//len(all_mid)
+    ticksperbeat = ticksperbeat // len(all_mid)
 
     for i, item in enumerate(all_lists):
         # this gets rid of excess set_tempo messages
         if all_lists[i][0].type == "set_tempo":
-            while all_lists[i+1][0].type == "set_tempo":  # talk about trying this with i and i-1?
+            while all_lists[i + 1][0].type == "set_tempo":  # talk about trying this with i and i-1?
                 all_lists.pop(i)
 
     all_lists = unify_program_changes(all_lists)
@@ -118,6 +111,16 @@ def main():  # for each midi file do the following
     """
 
     return all_lists, ticksperbeat
+
+
+def main():  # for each midi file do the following
+    # place-holder until database implemented
+    # all_mid = ['major-scale.mid']
+    # all_mid = ['Gloria-Mozart.MID.mid']
+    # all_mid = ['BohemianRhapsody.mid']
+    # all_mid = [' (Yiruma).mid']
+    all_mid = ['ItsBeginningToLookALotLikeChristmas.mid', 'BohemianRhapsody.mid']
+    get_all_lists_and_tpb(all_mid)
 
 
 if __name__ == '__main__':

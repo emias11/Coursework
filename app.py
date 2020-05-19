@@ -3,6 +3,8 @@ import bs
 import bs2
 import os
 import glob
+from construction import get_songs_msgs, get_instruments
+from probabilities import get_channels_dict
 
 app = Flask(__name__)
 results = []
@@ -38,17 +40,22 @@ def retrieve_instruments():
 	global results
 	data = request.json
 	songs = data["songs"]
-	instruments = ["Guitar", "Piano"]  # hardcoded for now
+	instruments = [] # hardcoded for now
 	files = glob.glob("songs/*")
 	for f in files:
 		os.remove(f)  # clear songs directory
+	all_mid = []
 	for song in songs:
 		url = results[song]["url"]
 		name = results[song]["name"]
+		all_mid.append("songs/" + name + ".mid")
 		bs.save_midi(url, name)
 		# pass to regulate tracks
 		# pass input messages to probabilities.py
 		# parse response and add to instruments list
+	all_msgs = get_songs_msgs(all_mid)
+	instruments = get_instruments(all_msgs)
+	print(instruments)
 	return jsonify({"instruments": instruments})
 
 
