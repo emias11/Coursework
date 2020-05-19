@@ -40,7 +40,7 @@ def retrieve_instruments():
 	global results
 	data = request.json
 	songs = data["songs"]
-	instruments = [] # hardcoded for now
+	instruments = []
 	files = glob.glob("songs/*")
 	for f in files:
 		os.remove(f)  # clear songs directory
@@ -50,12 +50,8 @@ def retrieve_instruments():
 		name = results[song]["name"]
 		all_mid.append("songs/" + name + ".mid")
 		bs.save_midi(url, name)
-		# pass to regulate tracks
-		# pass input messages to probabilities.py
-		# parse response and add to instruments list
 	all_msgs = get_songs_msgs(all_mid)
 	instruments = get_instruments(all_msgs)
-	print(instruments)
 	return jsonify({"instruments": instruments})
 
 
